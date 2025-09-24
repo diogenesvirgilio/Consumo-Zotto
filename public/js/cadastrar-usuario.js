@@ -1,5 +1,6 @@
 import { BASE_URL } from "../js/api/config.js";
 import { getUserFromToken, logout } from "../js/utils/auth.js";
+import { showModalSistema } from "./utils/modalService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const userInfo = document.getElementById("userInfo");
@@ -50,6 +51,7 @@ const form = document.getElementById("cadastroUsuarioForm");
 
     const data = await response.json();
     if (response.ok) {
+        form.reset();
         showModalSistema({
           titulo: 'Sucesso',
           conteudo: 'Usuário cadastrado com sucesso!',
@@ -67,34 +69,5 @@ const form = document.getElementById("cadastroUsuarioForm");
     });
 }); 
 
-function showModalSistema({ titulo = '', conteudo = '', erros = [], showConfirmar = false, onConfirmar = null }) {
-  document.getElementById('modalSistema_titulo').textContent = titulo;
-  document.getElementById('modalSistema_conteudo').textContent = conteudo;
-
-  const listaErros = document.getElementById('modalSistema_listaErros');
-  if (erros.length > 0) {
-        listaErros.innerHTML = erros.map(e => `<li>${e}</li>`).join('');
-        listaErros.classList.remove('d-none');
-    } else {
-        listaErros.innerHTML = '';
-        listaErros.classList.add('d-none');
-    } 
-
-  const btnConfirmar = document.getElementById('modalSistema_btnConfirmar');
-    if (showConfirmar) {
-        btnConfirmar.classList.remove('d-none');
-        btnConfirmar.onclick = () => {
-            if (onConfirmar) onConfirmar();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalSistema'));
-            modal.hide();
-        };
-    } else {
-        btnConfirmar.classList.add('d-none');
-        btnConfirmar.onclick = null;
-    } 
-    
-    const modal = new bootstrap.Modal(document.getElementById('modalSistema'));
-    modal.show();
-}
 
 
