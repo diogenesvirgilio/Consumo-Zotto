@@ -20,7 +20,6 @@ export async function findRefreshToken(token) {
 
 export async function deleteRefreshToken(token) {
     const result = await pool.query("DELETE FROM refresh_tokens WHERE token = $1", [token]);
-    console.log("Tentando remover refreshToken:", token);
     return result.rowCount;  
 } 
 
@@ -53,7 +52,7 @@ export async function logRequest(req, res, next) {
             );
         }
 } catch (err) {
-    console.error("Erro ao salvar log:", err);
+    res.status(403).json({ error: "Erro ao inserir o log" });
 } 
 next();
 }

@@ -41,9 +41,9 @@ export async function findUsuario(req, res) {
 
 export async function registerUsuario(req, res) {
     try {
-        const { nome, email, senha, criado_em, role } = req.body;
+        const { nome, email, senha, role } = req.body;
         const senha_hash = await bcrypt.hash(senha, SALT_ROUNDS);
-        const newUsuario = await createUsuario(nome, email, senha_hash, criado_em, role);
+        const newUsuario = await createUsuario(nome, email, senha_hash, role);
         const { senha_hash: _, ...usuariosSemSenha } = newUsuario;
         res.status(201).json(usuariosSemSenha);
     } catch (err) {
@@ -54,7 +54,7 @@ export async function registerUsuario(req, res) {
 export async function handleUpdateUsuario(req, res) {
     try {
         const { id } = req.params;
-        const { nome, email, senha, criado_em, role } = req.body;
+        const { nome, email, senha, role } = req.body;
         let senha_hash;
         if (senha) {
             senha_hash = await bcrypt.hash(senha, SALT_ROUNDS);
@@ -66,7 +66,7 @@ export async function handleUpdateUsuario(req, res) {
             senha_hash = usuarioAtual.senha_hash;
         }
 
-        const usuarioAtualizado = await updateUsuario(id, nome, email, senha_hash, criado_em, role);
+        const usuarioAtualizado = await updateUsuario(id, nome, email, senha_hash, role);
         if (!usuarioAtualizado) {
             return res.status(404).json({ message: "Usuário não encontrado" });
         } 
@@ -96,7 +96,7 @@ export async function loginUsuario(req, res) {
         }
         const senhaValida = await bcrypt.compare(senha, usuario.senha_hash);
         if (!senhaValida) {
-            return res.status(401).json({ message: "Credencias inválidas" });
+            return res.status(401).json({ message: "Credenciais inválidas" });
         }
         
         const token = jwt.sign(

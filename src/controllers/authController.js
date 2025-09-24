@@ -23,13 +23,21 @@ export async function login(req, res) {
         }    
         
         const token = jwt.sign(
-            { id: usuario.id, role: usuario.role },
+            { 
+                id: usuario.id, 
+                nome: usuario.nome,
+                email: usuario.email,
+                role: usuario.role 
+            },
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN }
         );
 
         const refreshToken = jwt.sign(
-            { id: usuario.id, role: usuario.id },
+            { 
+                id: usuario.id, 
+                role: usuario.role
+            },
             process.env.JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
         ); 
@@ -76,7 +84,12 @@ export async function refresh(req, res) {
         const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     
             const newAccessToken = jwt.sign(
-                { id: payload.id, role: payload.role },
+                { 
+                    id: payload.id,
+                    nome: payload.nome,
+                    email: payload.email, 
+                    role: payload.role 
+                },
                 process.env.JWT_SECRET,
                 { expiresIn: "15m" }
             );

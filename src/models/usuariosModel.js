@@ -10,18 +10,18 @@ export async function getUsuariosById(id) {
     return result.rows[0];
 } 
 
-export async function createUsuario(nome, email, senha_hash, criado_em, role) {
+export async function createUsuario(nome, email, senha_hash, role) {
     const result = await pool.query(
-        "INSERT INTO usuarios (nome, email, senha_hash, criado_em, role) VALUES ($1, $2, $3, $4, $5) RETURNING *", 
-        [nome, email, senha_hash, criado_em, role]
+        "INSERT INTO usuarios (nome, email, senha_hash, role) VALUES ($1, $2, $3, $4) RETURNING *", 
+        [nome, email, senha_hash, role]
     ); 
     return result.rows[0];
 }
 
 export async function updateUsuario(id, nome, email, senha_hash, criado_em, role) {
     const result = await pool.query(
-        "UPDATE usuarios SET nome = $1, email = $2, senha_hash = $3, criado_em = $4, role = $5 WHERE id = $6 RETURNING *",
-        [nome, email, senha_hash, criado_em, role, id]
+        "UPDATE usuarios SET nome = $1, email = $2, senha_hash = $3, role = $4 WHERE id = $5 RETURNING *",
+        [nome, email, senha_hash, role, id]
     ); 
     return result.rows[0];
 } 
