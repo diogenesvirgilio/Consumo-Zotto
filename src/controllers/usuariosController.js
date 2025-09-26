@@ -42,6 +42,9 @@ export async function findUsuario(req, res) {
 export async function registerUsuario(req, res) {
     try {
         const { nome, email, senha, role } = req.body;
+        if (!["user", "admin"].includes(role)) {
+            return res.status(400).json({ error: "Categoria inválida." });
+        }
         const senha_hash = await bcrypt.hash(senha, SALT_ROUNDS);
         const newUsuario = await createUsuario(nome, email, senha_hash, role);
         const { senha_hash: _, ...usuariosSemSenha } = newUsuario;

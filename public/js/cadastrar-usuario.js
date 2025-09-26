@@ -37,6 +37,14 @@ const form = document.getElementById("cadastroUsuarioForm");
       conteudo: 'A senha deve ter pelo menos 6 dígitos.'
     });   
     return;
+  } 
+
+  if (role === "") {
+    showModalSistema({
+      titulo: 'Atenção',
+      conteudo: 'Selecione uma categoria válida.'
+    });
+    return;
   }
 
   try {
@@ -68,6 +76,7 @@ const form = document.getElementById("cadastroUsuarioForm");
   }
     });
 }); 
+
 
 
 
