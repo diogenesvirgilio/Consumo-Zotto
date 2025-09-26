@@ -1,6 +1,7 @@
 import { BASE_URL } from "../js/api/config.js";
 import { getUserFromToken, logout } from "../js/utils/auth.js";
 import { showModalSistema } from "./utils/modalService.js";
+import { fetchWithAuth } from "./api/authRefresh.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const userInfo = document.getElementById("userInfo");
@@ -48,11 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/usuarios`, {
+      const response = await fetchWithAuth(`${BASE_URL}/usuarios`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify({ nome, email, senha, role }),
       });
