@@ -1,9 +1,20 @@
 import { BASE_URL } from "../js/api/config.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
+import { getUserFromToken, logout } from "../js/utils/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const userInfo = document.getElementById("userInfo");
+  const user = getUserFromToken();
   carregarUsuarios();
+
+  if (user) {
+    userInfo.textContent = `${user.nome}`;
+  } else {
+    userInfo.textContent = "Não autenticado";
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
 
   document
     .getElementById("filtrosUsuarios")
