@@ -1,0 +1,8 @@
+body {
+    overflow: hidden;
+} 
+
+.table-responsive {
+    max-height: 700px;
+    overflow: auto;
+}
