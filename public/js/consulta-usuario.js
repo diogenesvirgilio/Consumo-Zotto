@@ -81,8 +81,45 @@ function preencherTabela(usuarios) {
       <td>${u.email}</td>
       <td>${u.role}</td>
       <td>${u.criado_em ? new Date(u.criado_em).toLocaleDateString() : ""}</td>
+      <td>
+        <button class="btn btn-danger btn-sm btn-excluir" data-id="${u.id}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
     `;
     tbody.appendChild(tr);
+  });
+  adicionarEventosExcluir();
+}
+
+function adicionarEventosExcluir() {
+  const botoesExcluir = document.querySelectorAll(".btn-excluir");
+  botoesExcluir.forEach((botao) => {
+    botao.addEventListener("click", async (e) => {
+      const id = e.target.closest("button").getAttribute("data-id");
+      showModalSistema({
+        titulo: "Confirmação",
+        conteudo: "Deseja excluir este usuário?",
+        confirmacao: true,
+        callbackConfirmar: async () => {
+          try {
+            await fetchWithAuth(`${BASE_URL}/usuarios/${id}`, {
+              method: "DELETE",
+            });
+            const modalEl = document.getElementById("modalSistema");
+            modalEl.addEventListener("hidden.bs.modal", function handler() {
+              carregarUsuarios();
+              modalEl.removeEventListener("hidden.bs.modal", handler);
+            });
+          } catch (err) {
+            showModalSistema({
+              titulo: "Erro",
+              conteudo: err?.message || "Erro ao excluir usuário.",
+            });
+          }
+        },
+      });
+    });
   });
 }
 
