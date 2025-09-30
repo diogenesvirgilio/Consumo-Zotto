@@ -1,14 +1,12 @@
-import { BASE_URL } from "../api/config.js";
 import { getAccessToken } from "./storage.js";
 
 export function getAccessToken() {
-    return localStorage.getItem("accessToken");
+  return localStorage.getItem("accessToken");
 }
 
 export function requireAuth() {
-    const token = getAccessToken();
-    if (!token) {
-        window.location.href = "/pages/login.html"
-    }
-} 
-
+  const token = getAccessToken();
+  if (!token) {
+    window.location.href = "/pages/login.html";
+  }
+}

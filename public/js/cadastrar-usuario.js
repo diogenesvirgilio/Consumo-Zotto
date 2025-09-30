@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
   const form = document.getElementById("cadastroUsuarioForm");
+  if (!form) return;
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 

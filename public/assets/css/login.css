@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  position: relative;
+
+  background-image: url("../images/zotto2.png");
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat; 
+}

@@ -1,0 +1,15 @@
+@media (min-width: 992px) {
+    .navbar .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+}
+
+body {
+    overflow: hidden;
+} 
+
+.table-responsive {
+    max-height: 700px;
+    overflow: auto;
+}

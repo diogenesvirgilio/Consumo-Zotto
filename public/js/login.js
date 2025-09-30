@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
-      window.location.href = "/pages/cadastrar-usuario.html";
+      window.location.href = "/pages/index.html";
     } catch (err) {
       showModalSistema({
         titulo: "Erro",
