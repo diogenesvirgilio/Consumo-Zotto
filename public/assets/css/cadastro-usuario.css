@@ -12,4 +12,10 @@ body {
 .table-responsive {
     max-height: 700px;
     overflow: auto;
+} 
+
+.logo-navbar {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
 }

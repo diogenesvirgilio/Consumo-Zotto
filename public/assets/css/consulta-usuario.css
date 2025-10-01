@@ -3,4 +3,20 @@
         display: block;
         margin-top: 0;
     }
+} 
+
+body {
+  overflow: hidden;
+}
+
+.logo-navbar {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+} 
+
+.table-responsive {
+  max-height: 700px;  
+  overflow-y: auto;   
+  overflow-x: auto;   
 }

@@ -14,4 +14,10 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+} 
+
+.logo-navbar {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
 }
