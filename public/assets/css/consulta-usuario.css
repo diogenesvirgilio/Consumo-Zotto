@@ -19,4 +19,9 @@ body {
   max-height: 700px;  
   overflow-y: auto;   
   overflow-x: auto;   
+} 
+
+tr.editando {
+  background-color: #fff3cd !important; 
+  transition: background-color 0.3s ease;
 }

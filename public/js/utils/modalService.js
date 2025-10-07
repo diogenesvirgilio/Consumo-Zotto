@@ -19,7 +19,6 @@ export function showModalSistema({
 
   const btnConfirmar = document.getElementById("modalSistema_btnConfirmar");
   if (confirmacao) {
-    // Remove os eventos antigos
     btnConfirmar.classList.remove("d-none");
     btnConfirmar.onclick = async () => {
       if (callbackConfirmar) await callbackConfirmar();

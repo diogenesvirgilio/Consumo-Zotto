@@ -82,6 +82,12 @@ function preencherTabela(usuarios) {
       <td>${u.role}</td>
       <td>${u.criado_em ? new Date(u.criado_em).toLocaleDateString() : ""}</td>
       <td>
+          <button class="btn btn-warning btn-sm btn-editar" data-id="${u.id}">
+            <i class="fas fa-edit"></i>
+          </button>
+      </td>
+
+      <td>
         <button class="btn btn-danger btn-sm btn-excluir" data-id="${u.id}">
           <i class="fas fa-trash"></i>
         </button>
@@ -89,7 +95,18 @@ function preencherTabela(usuarios) {
     `;
     tbody.appendChild(tr);
   });
+  //Remove o botão editar excluir da tabela para usuários que não são admin.
+  const usuarioLogado = getUserFromToken();
+  if (usuarioLogado?.role !== "admin") {
+    ["btn-editar", "btn-excluir"].forEach((classe) => {
+      document.querySelectorAll(`.${classe}`).forEach((btn) => {
+        btn.classList.add("d-none");
+      });
+    });
+  }
+
   adicionarEventosExcluir();
+  adicionarEventosEditar();
 }
 
 function adicionarEventosExcluir() {
@@ -121,6 +138,129 @@ function adicionarEventosExcluir() {
       });
     });
   });
+}
+
+function adicionarEventosEditar() {
+  const botoesEditar = document.querySelectorAll(".btn-editar");
+
+  botoesEditar.forEach((botao) => {
+    botao.addEventListener("click", async (e) => {
+      const btn = e.target.closest("button");
+      const id = btn.getAttribute("data-id");
+      const linha = btn.closest("tr");
+
+      const jaEditando = document.querySelector("tr.editando");
+      if (jaEditando && jaEditando !== linha) {
+        showModalSistema({
+          titulo: "Aviso",
+          conteudo: "Finalize a edição.",
+        });
+        return;
+      }
+
+      if (linha.classList.contains("editando")) {
+        await salvarEdicaoUsuario(linha, id);
+        return;
+      }
+
+      try {
+        const response = await fetchWithAuth(`${BASE_URL}/usuarios/${id}`);
+        const usuario = await response.json();
+
+        if (!response.ok) {
+          throw new Error(usuario.message || "Erro ao buscar usuário.");
+        }
+
+        linha.classList.add("editando");
+
+        const tds = linha.querySelectorAll("td");
+        const nome = tds[0].textContent.trim();
+        const email = tds[1].textContent.trim();
+        const role = tds[2].textContent.trim();
+
+        tds[0].innerHTML = `<input type="text" class="form-control form-control-sm" value="${nome}" id="editNome-${id}">`;
+
+        tds[1].innerHTML = `<input type="email" class="form-control form-control-sm" value="${email}" id="editEmail-${id}">`;
+
+        tds[2].innerHTML = `
+          <select class="form-select form-select-sm" id="editRole-${id}">
+            <option value="user" ${role === "user" ? "selected" : ""}>User</option>
+            <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
+          </select>
+        `;
+
+        tds[4].innerHTML = `
+          <button class="btn btn-success btn-sm btn-salvar" data-id="${id}">
+            <i class="fas fa-check"></i>
+          </button>
+        `;
+
+        tds[5].innerHTML = `
+          <button class="btn btn-secondary btn-sm btn-cancelar" data-id="${id}">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+
+        linha
+          .querySelector(".btn-salvar")
+          .addEventListener("click", async () => {
+            await salvarEdicaoUsuario(linha, id);
+          });
+
+        linha.querySelector(".btn-cancelar").addEventListener("click", () => {
+          carregarUsuarios();
+        });
+      } catch (err) {
+        showModalSistema({
+          titulo: "Erro",
+          conteudo: err?.message || "Erro ao carregar dados do usuário.",
+        });
+      }
+    });
+  });
+}
+
+async function salvarEdicaoUsuario(linha, id) {
+  const nome = document.getElementById(`editNome-${id}`).value.trim();
+  const email = document.getElementById(`editEmail-${id}`).value.trim();
+  const role = document.getElementById(`editRole-${id}`).value;
+
+  if (!nome || !email || !role) {
+    showModalSistema({
+      titulo: "Aviso",
+      conteudo: "Preencha todos os campos antes de salvar.",
+    });
+    return;
+  }
+
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/usuarios/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, email, role }),
+    });
+
+    if (!response.ok) {
+      const erro = await response.json();
+      throw new Error(erro.message || "Erro ao atualizar usuário.");
+    }
+
+    showModalSistema({
+      titulo: "Sucesso",
+      conteudo: "Usuário atualizado com sucesso!",
+    });
+
+    const modalEl = document.getElementById("modalSistema");
+    modalEl.addEventListener("hidden.bs.modal", function handler() {
+      carregarUsuarios();
+      modalEl.removeEventListener("hidden.bs.modal", handler);
+    });
+  } catch (err) {
+    showModalSistema({
+      titulo: "Erro",
+      conteudo: err?.message || "Erro ao salvar alterações.",
+    });
+  }
 }
 
 export async function limparFiltros() {
