@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sistema de Consultas de Consumo</title>
+    <title>Cadastro Cortador</title>
 
-    
     <!-- Bootstrap 5.3.3 -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <link rel="stylesheet" href="../assets/css/index.css" />
+     
+    <link rel="stylesheet" href="../assets/css/cadastro-cortador.css" />
     <link rel="stylesheet" href="../assets/css/style.css" />
-
-    <!-- Font Awesome -->
+    
+     <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+
     <link
       rel="icon"
       href="../assets/images/icon-sound.ico"
@@ -97,7 +97,7 @@
                 role="button"
                 data-bs-toggle="dropdown"
               >
-                Matéria Prima
+                Materia Prima
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item">Cadastro</a></li>
@@ -121,6 +121,78 @@
       </div>
     </nav>
 
+    <div
+      class="d-flex align-items-center justify-content-center vh-100 bg-light"
+    >
+      <div
+        class="card shadow p-4 rounded-4"
+        style="width: 100%; max-width: 380px"
+      >
+        <h4 class="mb-4 text-center">Cadastrar Cortadores</h4>
+        <form id="cadastroCortadoresForm">
+          <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" required />
+          </div>
+          <div class="mb-3">
+            <div class="col-md-12">
+              <label for="role" class="form-label">Nivel Experiência</label>
+              <select class="form-select" id="role" required>
+                <option disabled selected>Selecione...</option>
+                <option value="user">Experiente</option>
+                <option value="admin">Novato</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modalSistema"
+      tabindex="-1"
+      aria-labelledby="modalSistemaLabel"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div
+            id="modalSistema_titulo_div"
+            class="modal-header bg-primary text-white"
+          >
+            <h5 id="modalSistema_titulo" class="modal-title">Título</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p id="modalSistema_conteudo">Conteúdo</p>
+            <ul id="modalSistema_listaErros" class="text-danger d-none"></ul>
+          </div>
+          <div class="modal-footer">
+            <button
+              id="modalSistema_btnCancelar"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Fechar
+            </button>
+            <button
+              id="modalSistema_btnConfirmar"
+              class="btn btn-primary d-none"
+            >
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="../js/cadastrar-usuario.js"></script>
+    <script type="module" src="../js/app.js"></script>
   </body>
 </html>

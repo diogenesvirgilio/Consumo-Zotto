@@ -1,0 +1,12 @@
+.dropdown-item.disabled-link {
+  color: #adb5bd !important;        /* cinza */
+  pointer-events: none;             /* não clicável */
+  cursor: default;                  /* cursor padrão */
+  text-decoration: none;
+  opacity: 0.7;                     /* ligeiramente apagado */
+}
+
+.dropdown-item.disabled-link:hover {
+  background-color: transparent !important;
+  color: #adb5bd !important;
+}

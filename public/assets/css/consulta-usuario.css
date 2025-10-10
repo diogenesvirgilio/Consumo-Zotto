@@ -21,7 +21,13 @@ body {
   overflow-x: auto;   
 } 
 
-tr.editando {
+.tabela-usuarios tr.editando {
   background-color: #fff3cd !important; 
   transition: background-color 0.3s ease;
+} 
+
+.tabela-usuarios tbody tr:hover {
+  background-color: #fff3cd;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
