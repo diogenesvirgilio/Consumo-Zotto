@@ -1,13 +1,27 @@
-import { getUserFromToken } from "./utils/auth.js";
+import { getUserFromToken, logout } from "./utils/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = getUserFromToken();
 
+  const userNameDisplay = document.getElementById("userNameDisplay");
+
+  if (user) {
+    userNameDisplay.textContent = `${user.nome}`;
+  } else {
+    userNameDisplay.textContent = "Não autenticado";
+    window.location.href = "login.html";
+  }
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+
   if (usuarioLogado?.role !== "admin") {
     const linksBloqueados = [
-      "cadastro-usuario.html",
+      "cadastrar-usuario.html",
       "consultas-usuario.html",
-      "cadastro-cortador.html",
+      "cadastrar-cortador.html",
       "consultas-cortador.html",
     ];
 
@@ -19,3 +33,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+const user = getUserFromToken();
+
+if (user && user.role !== "admin") {
+  document
+    .querySelectorAll(
+      'a[href*="cadastrar-usuario"], a[href*="cadastrar-cortador"]'
+    )
+    .forEach((link) => {
+      link.classList.add("disabled-link");
+      link.addEventListener("click", (e) => e.preventDefault());
+    });
+}

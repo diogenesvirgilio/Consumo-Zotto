@@ -10,3 +10,9 @@
   background-color: transparent !important;
   color: #adb5bd !important;
 }
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}

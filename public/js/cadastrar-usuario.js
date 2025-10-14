@@ -4,21 +4,35 @@ import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userInfo = document.getElementById("userInfo");
+  const userNameDisplay = document.getElementById("userNameDisplay");
   const user = getUserFromToken();
 
   if (user) {
-    userInfo.textContent = `${user.nome}`;
+    userNameDisplay.textContent = `${user.nome}`;
   } else {
-    userInfo.textContent = "Não autenticado";
+    userNameDisplay.textContent = "Não autenticado";
+    window.location.href = "login.html";
   }
 
-  document.getElementById("logoutBtn").addEventListener("click", logout);
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
 
   const form = document.getElementById("cadastroUsuarioForm");
+  const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
   if (!form) return;
+
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    if (submitBtn) submitBtn.disabled = true;
 
     const nome = document.getElementById("nome").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -30,6 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Preencha todos os campos obrigatórios.",
       });
+      if (submitBtn) submitBtn.disabled = false;
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showModalSistema({
+        titulo: "Atenção",
+        conteudo: "Por favor, insira um e-mail válido.",
+      });
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
@@ -38,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "A senha deve ter pelo menos 6 dígitos.",
       });
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
@@ -46,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Selecione uma categoria válida.",
       });
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
@@ -72,11 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
           conteudo: data.error || data.message || "Erro desconhecido.",
         });
       }
-    } catch (error) {
+    } catch (err) {
       showModalSistema({
         titulo: "Erro",
         conteudo: "Usuário ou senha inválidos.",
       });
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 });

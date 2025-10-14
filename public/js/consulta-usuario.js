@@ -4,14 +4,14 @@ import { fetchWithAuth } from "./api/authRefresh.js";
 import { getUserFromToken, logout } from "../js/utils/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userInfo = document.getElementById("userInfo");
+  const userNameDisplay = document.getElementById("userNameDisplay");
   const user = getUserFromToken();
   carregarUsuarios();
 
   if (user) {
-    userInfo.textContent = `${user.nome}`;
+    userNameDisplay.textContent = `${user.nome}`;
   } else {
-    userInfo.textContent = "Não autenticado";
+    userNameDisplay.textContent = "Não autenticado";
   }
 
   document.getElementById("logoutBtn").addEventListener("click", logout);

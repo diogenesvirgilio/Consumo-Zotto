@@ -1,18 +1,23 @@
 import express from "express";
+import * as cortadoresController from "../controllers/cortadoresController.js";
 import {
-         listCortadores,
-         findCortador,
-         registerCortador,
-         handleUpdateCortador,
-         removeCortador
-} from "../controllers/cortadoresController.js"; 
+  authenticateToken,
+  authorizeRoles,
+  verifyToken,
+} from "../middlewares/authMiddleware.js";
 
-const router = express.Router(); 
+const router = express.Router();
 
-router.get("/", listCortadores); 
-router.get("/:id", findCortador);
-router.post("/", registerCortador);
-router.put("/:id", handleUpdateCortador);
-router.delete("/:id", removeCortador); 
+router.get("/", cortadoresController.listCortadores);
+router.get("/:id", cortadoresController.findCortador);
+router.post(
+  "/",
+  verifyToken,
+  authorizeRoles("admin"),
+  authenticateToken,
+  cortadoresController.registerCortador
+);
+router.put("/:id", cortadoresController.handleUpdateCortador);
+router.delete("/:id", cortadoresController.removeCortador);
 
-export default router; 
+export default router;

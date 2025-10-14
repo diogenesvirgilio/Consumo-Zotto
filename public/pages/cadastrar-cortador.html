@@ -109,11 +109,11 @@
       </div>
 
       <div class="d-flex align-items-center text-white">
-        <span class="me-2" id="userInfo">Login:</span>
+        <span class="me-2" id="userNameDisplay">Login:</span>
       </div>
 
       <div class="d-flex align-items-center">
-        <div id="userInfo">
+        <div id="userActions">
           <button type="submit" id="logoutBtn" class="btn btn-light me-2">
             Logout
           </button>
@@ -129,18 +129,18 @@
         style="width: 100%; max-width: 380px"
       >
         <h4 class="mb-4 text-center">Cadastrar Cortadores</h4>
-        <form id="cadastroCortadoresForm">
+        <form id="cadastroCortadorForm">
           <div class="mb-3">
             <label for="nome" class="form-label">Nome</label>
             <input type="text" class="form-control" id="nome" required />
           </div>
           <div class="mb-3">
             <div class="col-md-12">
-              <label for="role" class="form-label">Nivel Experiência</label>
-              <select class="form-select" id="role" required>
+              <label for="roleExp" class="form-label">Nivel Experiência</label>
+              <select class="form-select" id="roleExp" required>
                 <option disabled selected>Selecione...</option>
-                <option value="user">Experiente</option>
-                <option value="admin">Novato</option>
+                <option value="experiente">Experiente</option>
+                <option value="novato">Novato</option>
               </select>
             </div>
           </div>
@@ -191,8 +191,7 @@
         </div>
       </div>
     </div>
-
-    <script type="module" src="../js/cadastrar-usuario.js"></script>
-    <script type="module" src="../js/app.js"></script>
+    <script defer type="module" src="../js/app.js"></script>
+    <script defer type="module" src="../js/cadastrar-usuario.js"></script>
   </body>
 </html>
