@@ -1,0 +1,59 @@
+@media (min-width: 992px) {
+    .navbar .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+} 
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto; /* Permite a rolagem geral apenas quando necessário */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  flex-shrink: 0; /* Garante que a navbar mantenha sua altura e não seja comprimida */
+}
+
+.main-content {
+    flex-grow: 1;                          /* Faz este elemento ocupar todo o espaço vertical restante */
+    display: flex;                         /* Para usar flexbox para centralizar */
+    flex-direction: column;                /* Para empilhar itens verticalmente */
+    justify-content: center;               /* Centraliza verticalmente o card */
+    align-items: center;                   /* Centraliza horizontalmente o card */
+    padding: 20px;                         /* Adiciona um padding para evitar que o card grude nas bordas em telas pequenas */
+    box-sizing: border-box;                /* Garante que o padding não aumente a altura/largura total */
+    overflow-y: auto;                      /* Adicione overflow-y: auto; para garantir que apenas o main-content role se o conteúdo dele for grande demais */
+    overflow-x: hidden;                    /* Adicione overflow-x: hidden; para evitar rolagem horizontal indesejada */
+}
+
+.logo-navbar {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+} 
+
+.dropdown-item.disabled-link {
+    color: #adb5bd !important;  /* cinza */
+    pointer-events: none;         /* não clicável */
+    cursor: default;              /* cursor padrão */
+    text-decoration: none;
+    opacity: 0.7;                 /* ligeiramente apagado */
+}
+
+.dropdown-item.disabled-link:hover {
+    background-color: transparent !important;
+    color: #adb5bd !important;
+}
+
+.disabled-link {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
