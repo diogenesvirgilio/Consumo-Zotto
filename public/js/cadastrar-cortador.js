@@ -1,20 +1,8 @@
 import { BASE_URL } from "./api/config.js";
-import { getUserFromToken, logout } from "../js/utils/auth.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userNameDisplay = document.getElementById("userNameDisplay");
-  const user = getUserFromToken();
-
-  if (user) {
-    userNameDisplay.textContent = `${user.nome}`;
-  } else {
-    userNameDisplay.textContent = "Não autenticado";
-  }
-
-  document.getElementById("logoutBtn").addEventListener("click", logout);
-
   const form = document.getElementById("cadastroCortadorForm");
   if (!form) return;
   form.addEventListener("submit", async (e) => {

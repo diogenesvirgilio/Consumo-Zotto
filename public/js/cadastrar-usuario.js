@@ -1,24 +1,8 @@
 import { BASE_URL } from "../js/api/config.js";
-import { getUserFromToken, logout } from "../js/utils/auth.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userNameDisplay = document.getElementById("userNameDisplay");
-  const user = getUserFromToken();
-
-  if (user) {
-    userNameDisplay.textContent = `${user.nome}`;
-  } else {
-    userNameDisplay.textContent = "Não autenticado";
-    window.location.href = "login.html";
-  }
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
-  }
-
   const form = document.getElementById("cadastroUsuarioForm");
   const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
