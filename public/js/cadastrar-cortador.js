@@ -4,9 +4,14 @@ import { fetchWithAuth } from "./api/authRefresh.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("cadastroCortadorForm");
+  const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
   if (!form) return;
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    if (submitBtn) submitBtn.disabled = true;
 
     const nome = document.getElementById("nome").value.trim();
     const roleExp = document.getElementById("roleExp").value;
@@ -16,14 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Preencha todos os campos obrigatórios.",
       });
-      return;
-    }
-
-    if (roleExp === "") {
-      showModalSistema({
-        titulo: "Atenção",
-        conteudo: "Selecione um nível válido.",
-      });
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
@@ -46,14 +44,18 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         showModalSistema({
           titulo: "Erro",
-          conteudo: data.error || data.message || "Erro desconhecido.",
+          conteudo:
+            data.error || data.message || "Erro desconhecido ao cadastrar.",
         });
       }
     } catch (err) {
+      console.error("Falha na requisição:", err);
       showModalSistema({
         titulo: "Erro",
-        conteudo: "Erro ao cadastrar.",
+        conteudo: "Não foi possível conectar ao servidor.",
       });
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 });
