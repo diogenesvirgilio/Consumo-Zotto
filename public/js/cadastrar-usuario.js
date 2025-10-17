@@ -50,15 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (role === "") {
-      showModalSistema({
-        titulo: "Atenção",
-        conteudo: "Selecione uma categoria válida.",
-      });
-      if (submitBtn) submitBtn.disabled = false;
-      return;
-    }
-
     try {
       const response = await fetchWithAuth(`${BASE_URL}/usuarios`, {
         method: "POST",

@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ nome, roleExp }),
+        body: JSON.stringify({ nome, nivel_experiencia: roleExp }),
       });
 
       const data = await response.json();
@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     } catch (err) {
-      console.error("Falha na requisição:", err);
       showModalSistema({
         titulo: "Erro",
         conteudo: "Não foi possível conectar ao servidor.",

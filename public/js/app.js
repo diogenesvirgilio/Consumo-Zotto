@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const userNameDisplay = document.getElementById("userNameDisplay");
 
-  if (user) {
-    userNameDisplay.textContent = `${user.nome}`;
+  if (usuarioLogado) {
+    userNameDisplay.textContent = `${usuarioLogado.nome}`;
   } else {
     userNameDisplay.textContent = "Não autenticado";
     window.location.href = "login.html";
@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-const user = getUserFromToken();
+const usuarioLogado = getUserFromToken();
 
-if (user && user.role !== "admin") {
+if (usuarioLogado && usuarioLogado.role !== "admin") {
   document
     .querySelectorAll(
       'a[href*="cadastrar-usuario"], a[href*="cadastrar-cortador"]'

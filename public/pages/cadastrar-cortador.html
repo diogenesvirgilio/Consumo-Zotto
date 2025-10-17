@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net;">
     <title>Cadastro Cortador</title>
 
     <!-- Bootstrap 5.3.3 -->
@@ -137,7 +138,7 @@
             <div class="col-md-12">
               <label for="roleExp" class="form-label">Nivel Experiência</label>
               <select class="form-select" id="roleExp" required>
-                <option disabled selected>Selecione...</option>
+                <option value="" disabled selected>Selecione...</option>
                 <option value="experiente">Experiente</option>
                 <option value="novato">Novato</option>
               </select>
