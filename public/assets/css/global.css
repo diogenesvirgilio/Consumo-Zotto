@@ -53,7 +53,8 @@ body {
 }
 
 .disabled-link {
-    pointer-events: none;
-    opacity: 0.5;
-    cursor: not-allowed;
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    text-decoration: none !important; 
 }

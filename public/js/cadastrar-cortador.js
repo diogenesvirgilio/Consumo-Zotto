@@ -1,8 +1,14 @@
 import { BASE_URL } from "./api/config.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
+import { requireAuth } from "./utils/auth-guard.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // verfica se o usuário tem permissão de admin
+  if (!requireAuth(["admin"])) {
+    return;
+  }
+
   const form = document.getElementById("cadastroCortadorForm");
   const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 

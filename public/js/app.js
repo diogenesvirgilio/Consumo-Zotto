@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     userNameDisplay.textContent = "Não autenticado";
     window.location.href = "login.html";
+    return;
   }
 
   const logoutBtn = document.getElementById("logoutBtn");
@@ -17,22 +18,24 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", logout);
   }
 
+  // Aplica as restrições de acesso para usuários não-admin
   if (usuarioLogado?.role !== "admin") {
     const linksBloqueados = [
       "cadastrar-usuario.html",
-      "consultas-usuario.html",
       "cadastrar-cortador.html",
-      "consultas-cortador.html",
     ];
 
+    // Desabilita os links de cadastro para usuários não-admin
     document.querySelectorAll(".dropdown-item").forEach((link) => {
       const href = link.getAttribute("href");
       if (href && linksBloqueados.some((bloq) => href.includes(bloq))) {
         link.classList.add("disabled-link");
+        link.addEventListener("click", (e) => e.preventDefault());
       }
     });
   }
 });
+<<<<<<< HEAD
 
 const usuarioLogado = getUserFromToken();
 
@@ -46,3 +49,5 @@ if (usuarioLogado && usuarioLogado.role !== "admin") {
       link.addEventListener("click", (e) => e.preventDefault());
     });
 }
+=======
+>>>>>>> 19de784 (update 23-10-2025)
