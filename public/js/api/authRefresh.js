@@ -3,6 +3,7 @@ import {
   getAccessToken,
   getRefreshToken,
   setAccessToken,
+  setRefreshToken,
   clearStorage,
 } from "../utils/storage.js";
 import { showModalSistema } from "../utils/modalService.js";
@@ -16,6 +17,14 @@ export async function fetchWithAuth(url, options = {}) {
 
   if (response.status === 401 || response.status === 403) {
     const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      clearStorage();
+      showModalSistema({
+        titulo: "Sessão expirada",
+        conteudo: "Por favor, faça o login novamente.",
+      });
+      throw new Error("Refresh token ausente");
+    }
     const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,6 +34,10 @@ export async function fetchWithAuth(url, options = {}) {
     if (refreshResponse.ok) {
       const data = await refreshResponse.json();
       setAccessToken(data.accessToken);
+      if (data.refreshToken) {
+        localStorage.setItem("refreshToken", data.refreshToken);
+        setRefreshToken(data.refreshToken);
+      }
       options.headers["Authorization"] = `Bearer ${data.accessToken}`;
       response = await fetch(url, options);
     } else {

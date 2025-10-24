@@ -35,19 +35,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-<<<<<<< HEAD
-
-const usuarioLogado = getUserFromToken();
-
-if (usuarioLogado && usuarioLogado.role !== "admin") {
-  document
-    .querySelectorAll(
-      'a[href*="cadastrar-usuario"], a[href*="cadastrar-cortador"]'
-    )
-    .forEach((link) => {
-      link.classList.add("disabled-link");
-      link.addEventListener("click", (e) => e.preventDefault());
-    });
-}
-=======
->>>>>>> 19de784 (update 23-10-2025)

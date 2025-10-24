@@ -6,6 +6,7 @@ import {
   deleteRefreshToken,
   findRefreshToken,
   saveTokenBlackList,
+  updateRefreshTokenExpiration,
 } from "../models/authModel.js";
 
 import { getUsuariosById } from "../models/usuariosModel.js";
@@ -113,7 +114,16 @@ export async function refresh(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
-    res.json({ accessToken: newAccessToken });
+
+    // Atualizar a data de expiração do refresh token (mantendo o mesmo token)
+    const novaExpiracao = new Date();
+    novaExpiracao.setDate(novaExpiracao.getDate() + 7);
+    await updateRefreshTokenExpiration(refreshToken, novaExpiracao);
+
+    return res.json({
+      accessToken: newAccessToken,
+      refreshToken: refreshToken,
+    });
   } catch (err) {
     res.status(500).json({ error: "Erro ao renovar token" });
   }

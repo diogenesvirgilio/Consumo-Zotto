@@ -4,19 +4,28 @@ import {
   getRefreshToken,
   setAccessToken,
   clearStorage,
+  setRefreshToken,
 } from "../utils/storage.js";
+import { fetchWithAuth } from "./authRefresh.js";
 
 export async function login(email, senha) {
-  const response = await fetchWithAuth(`${BASE_URL}/auth/login`, {
+  const response = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify({ email, senha }),
   });
-  return response.json();
+
+  const data = await response.json();
+  if (response.ok) {
+    setAccessToken(data.accessToken);
+    if (data.refreshToken) setRefreshToken(data.refreshToken);
+    return data;
+  }
+  throw data;
 }
 
 export async function refreshToken() {
-  const response = await fetchWithAuth(`${BASE_URL}/auth/refresh`, {
+  const response = await fetch(`${BASE_URL}/auth/refresh`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken: getRefreshToken() }),
@@ -25,7 +34,8 @@ export async function refreshToken() {
   const data = await response.json();
 
   if (response.ok) {
-    setAccessToken(data.getAccessToken);
+    if (data.accessToken) setAccessToken(data.accessToken);
+    if (data.refreshToken) setRefreshToken(data.refreshToken);
     return data.accessToken;
   } else {
     clearStorage();
