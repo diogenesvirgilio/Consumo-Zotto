@@ -12,6 +12,7 @@ import usuariosRoutes from "./routes/usuariosRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import { logRequest } from "./models/authModel.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
 
@@ -34,6 +35,8 @@ app.use("/materiaprima", materiaprimaRoutes);
 app.use("/faltas", faltasRoutes);
 app.use("/usuarios", authenticateToken, logRequest, usuariosRoutes);
 app.use("/auth", authRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);

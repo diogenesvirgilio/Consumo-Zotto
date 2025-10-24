@@ -12,13 +12,18 @@ export function getUserFromToken() {
 
     const payload = JSON.parse(atob(payloadBase64));
 
-    if (payload.exp * 1000 < Date.now()) {
-      return null;
+    // Permite um de 30 segundos antes da expiração
+    const bufferTime = 30 * 1000; // 30 segundos
+    if (payload.exp * 1000 < Date.now() + bufferTime) {
+      import("../api/auth.js").then((auth) => {
+        auth.refreshToken().catch((err) => {
+          return null;
+        });
+      });
     }
 
     return payload;
   } catch (e) {
-    console.error("Erro ao decodificar token:", e);
     return null;
   }
 }

@@ -33,9 +33,9 @@ export async function fetchWithAuth(url, options = {}) {
 
     if (refreshResponse.ok) {
       const data = await refreshResponse.json();
+
       setAccessToken(data.accessToken);
       if (data.refreshToken) {
-        localStorage.setItem("refreshToken", data.refreshToken);
         setRefreshToken(data.refreshToken);
       }
       options.headers["Authorization"] = `Bearer ${data.accessToken}`;

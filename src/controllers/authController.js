@@ -89,7 +89,10 @@ export async function refresh(req, res) {
         .json({ error: "Refresh token inválido ou revogado" });
     }
 
-    if (new Date(tokenDB.expiracao) <= new Date()) {
+    const dataAtual = new Date();
+    const dataExpiracao = new Date(tokenDB.expiracao);
+
+    if (dataExpiracao <= dataAtual) {
       await deleteRefreshToken(refreshToken);
       return res.status(403).json({ error: "Refresh token expirado" });
     }
@@ -115,16 +118,18 @@ export async function refresh(req, res) {
       { expiresIn: "15m" }
     );
 
-    // Atualizar a data de expiração do refresh token (mantendo o mesmo token)
+    // Atualizar expiração do refresh token
     const novaExpiracao = new Date();
     novaExpiracao.setDate(novaExpiracao.getDate() + 7);
+
     await updateRefreshTokenExpiration(refreshToken, novaExpiracao);
 
-    return res.json({
+    res.json({
       accessToken: newAccessToken,
-      refreshToken: refreshToken,
+      refreshToken: refreshToken, // Retorna o mesmo refresh token
     });
   } catch (err) {
+    console.error("[Refresh] Erro:", err);
     res.status(500).json({ error: "Erro ao renovar token" });
   }
 }

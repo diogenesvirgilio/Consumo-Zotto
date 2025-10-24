@@ -10,7 +10,7 @@ import {
 } from "../models/usuariosModel.js";
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || "secreta-super-segura";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function listUsuarios(req, res) {
   try {
@@ -21,7 +21,7 @@ export async function listUsuarios(req, res) {
     });
     res.json(usuariosSemSenha);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -35,7 +35,7 @@ export async function findUsuario(req, res) {
     const { senha_hash, ...usuariosSemSenha } = usuario;
     res.json(usuariosSemSenha);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -50,7 +50,7 @@ export async function registerUsuario(req, res) {
     const { senha_hash: _, ...usuariosSemSenha } = newUsuario;
     res.status(201).json(usuariosSemSenha);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -86,7 +86,7 @@ export async function handleUpdateUsuario(req, res) {
     const { senha_hash: _, ...usuariosSemSenha } = usuarioAtualizado;
     res.json(usuariosSemSenha);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -96,7 +96,7 @@ export async function removeUsuario(req, res) {
     await deleteUsuario(id);
     res.json({ message: "Usuário removido com sucesso" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
 
@@ -126,6 +126,6 @@ export async function loginUsuario(req, res) {
       },
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 }
