@@ -13,6 +13,7 @@ import authRoutes from "./routes/authRoutes.js";
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import { logRequest } from "./models/authModel.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import sanitize from "express-mongo-sanitize";
 
 dotenv.config();
 
@@ -22,7 +23,15 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors({ origin: process.env.CORS_ORIGIN }));
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS.split(","),
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  maxAge: 86400, // 24 horas
+};
+
+app.use(cors(corsOptions));
+app.use(sanitize());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
