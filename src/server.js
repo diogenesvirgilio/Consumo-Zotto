@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import sanitize from "express-mongo-sanitize";
 import "./database/db.js";
 import cortadoresRoutes from "./routes/cortadoresRoutes.js";
 import materiaprimaRoutes from "./routes/materiaprimaRoutes.js";
@@ -13,7 +13,6 @@ import authRoutes from "./routes/authRoutes.js";
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import { logRequest } from "./models/authModel.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import sanitize from "express-mongo-sanitize";
 
 dotenv.config();
 
@@ -31,8 +30,18 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(sanitize());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  if (req.body) {
+    sanitize.sanitize(req.body);
+  }
+  if (req.params) {
+    sanitize.sanitize(req.params);
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.get("/", (req, res) => {
