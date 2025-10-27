@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import logger from "./utils/logger.js";
 
 import "./database/db.js";
 import cortadoresRoutes from "./routes/cortadoresRoutes.js";
@@ -24,15 +25,14 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+//Middlawares globais
 app.use(corsMiddleware);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(sanitizeMiddleware);
-
 app.use(express.static(path.join(__dirname, "../public")));
 
+//Rotas
 app.use("/cortadores", authenticateToken, logRequest, cortadoresRoutes);
 app.use("/materiaprima", materiaprimaRoutes);
 app.use("/faltas", faltasRoutes);
@@ -43,8 +43,13 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/login.html"));
 });
 
+//Middlaware global de Erro
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    logger.info(`Servidor rodando na porta ${PORT}`);
+  });
+}
+
+export default app;

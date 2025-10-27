@@ -11,6 +11,9 @@ import {
 
 import { getUsuariosById } from "../models/usuariosModel.js";
 
+//logger.info("[Refresh] Iniciando refresh do token");
+//logger.error("[Refresh] Erro ao renovar token: %o", err);
+
 export async function refreshTokenController(req, res) {
   const { refreshToken } = req.body;
 
