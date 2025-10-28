@@ -1,12 +1,12 @@
-import { BASE_URL } from "../js/api/config.js";
+import { BASE_URL } from "./api/config.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
-import { getUserFromToken, logout } from "../js/utils/auth.js";
+import { getUserFromToken } from "../js/utils/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const userNameDisplay = document.getElementById("userNameDisplay");
   const user = getUserFromToken();
-  carregarUsuarios();
+  carregarCortadores();
 
   if (user) {
     userNameDisplay.textContent = `${user.nome}`;
@@ -15,17 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document
-    .getElementById("filtrosUsuarios")
+    .getElementById("filtrosCortadores")
     .addEventListener("submit", async (e) => {
       e.preventDefault();
-      await carregarUsuarios();
+      await carregarCortadores();
     });
 
   document.getElementById("btnLimparFiltros").addEventListener("click", () => {
     document.getElementById("nome").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("role").value = "";
-    carregarUsuarios();
+    document.getElementById("nivel_experiencia").value = "";
+    carregarCortadores();
   });
 });
 
@@ -33,23 +32,25 @@ function removerAcentos(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-async function carregarUsuarios() {
+async function carregarCortadores() {
   const nome = document.getElementById("nome").value.trim().toLowerCase();
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const role = document.getElementById("role").value.trim().toLowerCase();
+  const nivel_experiencia = document
+    .getElementById("nivel_experiencia")
+    .value.trim()
+    .toLowerCase();
 
   try {
-    const response = await fetchWithAuth(`${BASE_URL}/usuarios`);
-    const usuarios = await response.json();
+    const response = await fetchWithAuth(`${BASE_URL}/cortadores`);
+    const cortadores = await response.json();
 
-    const filtrados = usuarios.filter((u) => {
+    const filtrados = cortadores.filter((u) => {
       return (
         (!nome ||
           removerAcentos(u.nome.toLowerCase()).includes(
             removerAcentos(nome)
           )) &&
-        (!email || u.email.toLowerCase().includes(email)) &&
-        (!role || u.role.toLowerCase() === role)
+        (!nivel_experiencia ||
+          u.nivel_experiencia.toLowerCase() === nivel_experiencia)
       );
     });
 
@@ -57,28 +58,25 @@ async function carregarUsuarios() {
   } catch (err) {
     showModalSistema({
       titulo: "Erro",
-      conteudo: "Erro ao carregar usuários.",
+      conteudo: "Erro ao carregar cortadores.",
     });
   }
 }
 
-function preencherTabela(usuarios) {
-  const tbody = document.getElementById("listaUsuarios");
+function preencherTabela(cortadores) {
+  const tbody = document.getElementById("listaCortadores");
   tbody.innerHTML = "";
 
-  if (usuarios.length === 0) {
+  if (cortadores.length === 0) {
     tbody.innerHTML =
-      "<tr><td colspan='4' class='text-center'>Nenhum usuário encontrado.</td></tr>";
+      "<tr><td colspan='4' class='text-center'>Nenhum cortador encontrado.</td></tr>";
     return;
   }
-
-  usuarios.forEach((u) => {
+  cortadores.forEach((u) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${u.nome}</td>
-      <td>${u.email}</td>
-      <td>${u.role}</td>
-      <td>${u.criado_em ? new Date(u.criado_em).toLocaleDateString() : ""}</td>
+      <td>${u.nivel_experiencia}</td>
       <td>
           <button class="btn btn-warning btn-sm btn-editar" data-id="${u.id}">
             <i class="fas fa-edit"></i>
@@ -103,7 +101,6 @@ function preencherTabela(usuarios) {
       });
     });
   }
-
   adicionarEventosExcluir();
   adicionarEventosEditar();
 }
@@ -115,22 +112,22 @@ function adicionarEventosExcluir() {
       const id = e.target.closest("button").getAttribute("data-id");
       showModalSistema({
         titulo: "Confirmação",
-        conteudo: "Deseja excluir este usuário?",
+        conteudo: "Deseja excluir este cortador?",
         confirmacao: true,
         callbackConfirmar: async () => {
           try {
-            await fetchWithAuth(`${BASE_URL}/usuarios/${id}`, {
+            await fetchWithAuth(`${BASE_URL}/cortadores/${id}`, {
               method: "DELETE",
             });
             const modalEl = document.getElementById("modalSistema");
             modalEl.addEventListener("hidden.bs.modal", function handler() {
-              carregarUsuarios();
+              carregarCortadores();
               modalEl.removeEventListener("hidden.bs.modal", handler);
             });
           } catch (err) {
             showModalSistema({
               titulo: "Erro",
-              conteudo: err?.message || "Erro ao excluir usuário.",
+              conteudo: err?.message || "Erro ao excluir cortador.",
             });
           }
         },
@@ -158,43 +155,40 @@ function adicionarEventosEditar() {
       }
 
       if (linha.classList.contains("editando")) {
-        await salvarEdicaoUsuario(linha, id);
+        await salvarEdicaoCortador(linha, id);
         return;
       }
 
       try {
-        const response = await fetchWithAuth(`${BASE_URL}/usuarios/${id}`);
-        const usuario = await response.json();
+        const response = await fetchWithAuth(`${BASE_URL}/cortadores/${id}`);
+        const cortador = await response.json();
 
         if (!response.ok) {
-          throw new Error(usuario.message || "Erro ao buscar usuário.");
+          throw new Error(cortador.message || "Erro ao buscar cortador.");
         }
 
         linha.classList.add("editando");
 
         const tds = linha.querySelectorAll("td");
         const nome = tds[0].textContent.trim();
-        const email = tds[1].textContent.trim();
-        const role = tds[2].textContent.trim();
+        const nivel_experiencia = tds[1].textContent.trim();
 
         tds[0].innerHTML = `<input type="text" class="form-control form-control-sm" value="${nome}" id="editNome-${id}">`;
 
-        tds[1].innerHTML = `<input type="email" class="form-control form-control-sm" value="${email}" id="editEmail-${id}">`;
-
-        tds[2].innerHTML = `
-          <select class="form-select form-select-sm" id="editRole-${id}">
-            <option value="user" ${role === "user" ? "selected" : ""}>User</option>
-            <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
+        tds[1].innerHTML = `
+          <select class="form-select form-select-sm" id="editNivel-experiencia-${id}">
+            <option value="experiente" ${nivel_experiencia === "experiente" ? "selected" : ""}>Experiente</option>
+            <option value="novato" ${nivel_experiencia === "novato" ? "selected" : ""}>Novato</option>
           </select>
         `;
 
-        tds[4].innerHTML = `
+        tds[2].innerHTML = `
           <button class="btn btn-success btn-sm btn-salvar" data-id="${id}">
             <i class="fas fa-check"></i>
           </button>
         `;
 
-        tds[5].innerHTML = `
+        tds[3].innerHTML = `
           <button class="btn btn-secondary btn-sm btn-cancelar" data-id="${id}">
             <i class="fas fa-times"></i>
           </button>
@@ -203,28 +197,29 @@ function adicionarEventosEditar() {
         linha
           .querySelector(".btn-salvar")
           .addEventListener("click", async () => {
-            await salvarEdicaoUsuario(linha, id);
+            await salvarEdicaoCortador(linha, id);
           });
 
         linha.querySelector(".btn-cancelar").addEventListener("click", () => {
-          carregarUsuarios();
+          carregarCortadores();
         });
       } catch (err) {
         showModalSistema({
           titulo: "Erro",
-          conteudo: err?.message || "Erro ao carregar dados do usuário.",
+          conteudo: err?.message || "Erro ao carregar dados do cortador.",
         });
       }
     });
   });
 }
 
-async function salvarEdicaoUsuario(linha, id) {
+async function salvarEdicaoCortador(linha, id) {
   const nome = document.getElementById(`editNome-${id}`).value.trim();
-  const email = document.getElementById(`editEmail-${id}`).value.trim();
-  const role = document.getElementById(`editRole-${id}`).value;
+  const nivel_experiencia = document.getElementById(
+    `editNivel-experiencia-${id}`
+  ).value;
 
-  if (!nome || !email || !role) {
+  if (!nome || !nivel_experiencia) {
     showModalSistema({
       titulo: "Aviso",
       conteudo: "Preencha todos os campos antes de salvar.",
@@ -233,25 +228,25 @@ async function salvarEdicaoUsuario(linha, id) {
   }
 
   try {
-    const response = await fetchWithAuth(`${BASE_URL}/usuarios/${id}`, {
+    const response = await fetchWithAuth(`${BASE_URL}/cortadores/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nome, email, role }),
+      body: JSON.stringify({ nome, nivel_experiencia }),
     });
 
     if (!response.ok) {
       const erro = await response.json();
-      throw new Error(erro.message || "Erro ao atualizar usuário.");
+      throw new Error(erro.message || "Erro ao atualizar cortador.");
     }
 
     showModalSistema({
       titulo: "Sucesso",
-      conteudo: "Usuário atualizado com sucesso!",
+      conteudo: "Cortador atualizado com sucesso!",
     });
 
     const modalEl = document.getElementById("modalSistema");
     modalEl.addEventListener("hidden.bs.modal", function handler() {
-      carregarUsuarios();
+      carregarCortadores();
       modalEl.removeEventListener("hidden.bs.modal", handler);
     });
   } catch (err) {
@@ -263,11 +258,11 @@ async function salvarEdicaoUsuario(linha, id) {
 }
 
 export async function limparFiltros() {
-  const campos = ["nome", "cpf", "data_vencimento"];
+  const campos = ["nome", "nivel_experiencia"];
   campos.forEach((id) => {
     const campo = document.getElementById(id);
     if (campo) campo.value = "";
   });
 
-  carregarUsuarios();
+  carregarCortadores();
 }

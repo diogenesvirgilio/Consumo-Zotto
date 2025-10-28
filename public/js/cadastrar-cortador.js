@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       showModalSistema({
         titulo: "Erro",
-        conteudo: "Não foi possível conectar ao servidor.",
+        conteudo: "Usuário ou senha inválidos.",
       });
     } finally {
       if (submitBtn) submitBtn.disabled = false;

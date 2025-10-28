@@ -3,14 +3,12 @@ const { Pool } = pkg;
 import dotenv from "dotenv";
 import path from "path";
 
-// Carrega .env.test quando em ambiente de teste, caso exista
 const envPath =
   process.env.NODE_ENV === "test"
     ? path.join(process.cwd(), ".env.test")
     : path.join(process.cwd(), ".env");
 dotenv.config({ path: envPath });
 
-// Pool com timeouts mais agressivos para ambiente de teste
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -25,7 +23,6 @@ const pool = new Pool({
   ),
 });
 
-// Testa conexão de forma não intrusiva (não mantém cliente aberto)
 pool
   .query("SELECT 1")
   .then(() => {
