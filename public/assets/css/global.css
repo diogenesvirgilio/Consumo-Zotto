@@ -9,7 +9,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: auto; /* Permite a rolagem geral apenas quando necessário */
+  overflow: auto;                          /* Permite a rolagem geral apenas quando necessário */
 }
 
 body {
@@ -18,7 +18,7 @@ body {
 }
 
 .navbar {
-  flex-shrink: 0; /* Garante que a navbar mantenha sua altura e não seja comprimida */
+  flex-shrink: 0;                          /* Garante que a navbar mantenha sua altura e não seja comprimida */
 }
 
 .main-content {
@@ -39,12 +39,30 @@ body {
     object-fit: contain;
 } 
 
+/*Customizar as tabelas */
+.table-responsive {
+  max-height: 700px;  
+  overflow-y: auto;   
+  overflow-x: auto;   
+} 
+
+.tabela-geral tr.editando > * {
+  background-color: #fff3cd !important; 
+  transition: background-color 0.3s ease;
+} 
+
+.tabela-geral tbody tr:hover > * {
+  background-color: #fff3cd;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+} 
+
 .dropdown-item.disabled-link {
-    color: #adb5bd !important;  /* cinza */
-    pointer-events: none;         /* não clicável */
-    cursor: default;              /* cursor padrão */
+    color: #adb5bd !important;           /* cinza */
+    pointer-events: none;                  /* não clicável */
+    cursor: default;                       /* cursor padrão */
     text-decoration: none;
-    opacity: 0.7;                 /* ligeiramente apagado */
+    opacity: 0.7;                          /* ligeiramente apagado */
 }
 
 .dropdown-item.disabled-link:hover {
@@ -57,4 +75,4 @@ body {
     opacity: 0.5 !important;
     cursor: not-allowed !important;
     text-decoration: none !important; 
-}
+} 

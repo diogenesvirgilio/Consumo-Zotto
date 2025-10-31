@@ -1,15 +1,9 @@
 import { BASE_URL } from "./api/config.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
-import { requireAuth } from "./utils/auth-guard.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // verfica se o usuário tem permissão de admin
-  if (!requireAuth(["admin"])) {
-    return;
-  }
-
-  const form = document.getElementById("cadastroCortadorForm");
+  const form = document.getElementById("cadastroMateriaPrimaForm");
   const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
   if (!form) return;
@@ -20,9 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submitBtn) submitBtn.disabled = true;
 
     const nome = document.getElementById("nome").value.trim();
-    const roleExp = document.getElementById("roleExp").value;
 
-    if (!nome || !roleExp) {
+    if (!nome) {
       showModalSistema({
         titulo: "Atenção",
         conteudo: "Preencha todos os campos obrigatórios.",
@@ -32,12 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetchWithAuth(`${BASE_URL}/cortadores`, {
+      const response = await fetchWithAuth(`${BASE_URL}/materiaPrima`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ nome, nivel_experiencia: roleExp }),
+        body: JSON.stringify({ nome }),
       });
 
       const data = await response.json();
@@ -45,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.reset();
         showModalSistema({
           titulo: "Sucesso",
-          conteudo: "Cortador cadastrado com sucesso!",
+          conteudo: "Matéria prima cadastrada com sucesso!",
         });
       } else {
         showModalSistema({

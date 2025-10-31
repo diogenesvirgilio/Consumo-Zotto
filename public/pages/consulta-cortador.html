@@ -14,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" href="../assets/css/global.css" />
-    <link rel="stylesheet" href="../assets/css/consulta-cortador.css" />
     
     <!-- Font Awesome -->
     <link
@@ -49,9 +48,10 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
+        
+        <!-- Itens da navbar -->
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
@@ -68,7 +68,7 @@
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="consultas-usuario.html"
+                  <a class="dropdown-item" href="consulta-usuario.html"
                     >Consulta</a
                   >
                 </li>
@@ -100,21 +100,16 @@
                 Matéria Prima
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item">Cadastro</a></li>
-                <li><a class="dropdown-item">Consulta</a></li>
+                <li><a class="dropdown-item" href="cadastrar-materia-prima.html">Cadastro</a></li>
+                <li><a class="dropdown-item" href="consulta-materia-prima.html">Consulta</a></li>
               </ul>
             </li>
           </ul>
-        </div>
       </div>
 
-      <div class="d-flex align-items-center text-white">
-        <span class="me-2" id="userNameDisplay">Login:</span>
-      </div>
-
-      <div class="d-flex align-items-center">
-        <div id="userActions">
-          <button type="submit" id="logoutBtn" class="btn btn-light me-2">
+      <div class="d-flex align-items-center ms-auto">
+        <span class="text-white me-3" id="userNameDisplay">Login:</span>
+        <button type="button" id="logoutBtn" class="btn btn-light me-3">
             Logout
           </button>
         </div>
@@ -160,7 +155,7 @@
       <div class="row">
         <div class="col">
           <div class="table-responsive">
-            <table class="table table-striped tabela-cortadores">
+            <table class="table table-striped tabela-geral">
               <thead>
                 <tr>
                   <th>Nome</th>

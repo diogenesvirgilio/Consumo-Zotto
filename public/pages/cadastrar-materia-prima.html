@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net;">
-    <title>Cadastrar Cortador</title>
+    <title>Cadastrar Matéria Prima</title>
 
     <!-- Bootstrap 5.3.3 -->
     <link
@@ -106,7 +106,7 @@
           </ul>
       </div>
 
-      <div class="d-flex align-items-center ms-auto">
+     <div class="d-flex align-items-center ms-auto">
         <span class="text-white me-3" id="userNameDisplay">Login:</span>
         <button type="button" id="logoutBtn" class="btn btn-light me-3">
             Logout
@@ -122,21 +122,11 @@
         class="card shadow p-4 rounded-4"
         style="width: 100%; max-width: 380px"
       >
-        <h4 class="mb-4 text-center">Cadastrar Cortadores</h4>
-        <form id="cadastroCortadorForm">
+        <h4 class="mb-4 text-center">Cadastrar Matéria Prima</h4>
+        <form id="cadastroMateriaPrimaForm">
           <div class="mb-3">
-            <label for="nome" class="form-label">Nome</label>
+            <label for="nome" class="form-label">Matéria Prima</label>
             <input type="text" class="form-control" id="nome" required />
-          </div>
-          <div class="mb-3">
-            <div class="col-md-12">
-              <label for="roleExp" class="form-label">Nivel Experiência</label>
-              <select class="form-select" id="roleExp" required>
-                <option value="" disabled selected>Selecione...</option>
-                <option value="experiente">Experiente</option>
-                <option value="novato">Novato</option>
-              </select>
-            </div>
           </div>
           <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
         </form>
@@ -186,6 +176,6 @@
       </div>
     </div>
     <script defer type="module" src="../js/app.js"></script>
-    <script defer type="module" src="../js/cadastrar-cortador.js"></script>
+    <script defer type="module" src="../js/cadastrar-materia-prima.js"></script>
   </body>
 </html>
