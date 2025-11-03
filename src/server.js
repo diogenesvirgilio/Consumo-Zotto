@@ -47,9 +47,15 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
-    logger.info(`Servidor rodando na porta ${PORT}`);
-  });
+  try {
+    app.listen(PORT, () => {
+      console.log(`server.js: app.listen callback fired on port ${PORT}`);
+      logger.info(`Servidor rodando na porta ${PORT}`);
+    });
+  } catch (err) {
+    console.error("server.js: erro ao iniciar server", err);
+    throw err;
+  }
 }
 
 export default app;

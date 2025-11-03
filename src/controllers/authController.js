@@ -11,10 +11,7 @@ import {
 
 import { getUsuariosById } from "../models/usuariosModel.js";
 
-//logger.info("[Refresh] Iniciando refresh do token");
-//logger.error("[Refresh] Erro ao renovar token: %o", err);
-
-export async function refreshTokenController(req, res) {
+export async function refreshTokenController(req, res, next) {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -22,7 +19,7 @@ export async function refreshTokenController(req, res) {
   }
 }
 
-export async function login(req, res) {
+export async function login(req, res, next) {
   try {
     const { email, senha } = req.body;
 
@@ -73,11 +70,11 @@ export async function login(req, res) {
       },
     });
   } catch (err) {
-    res.status(500).json({ error: "Erro interno no servidor" });
+    next(err);
   }
 }
 
-export async function refresh(req, res) {
+export async function refresh(req, res, next) {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -133,11 +130,11 @@ export async function refresh(req, res) {
     });
   } catch (err) {
     console.error("[Refresh] Erro:", err);
-    res.status(500).json({ error: "Erro ao renovar token" });
+    next(err);
   }
 }
 
-export async function logout(req, res) {
+export async function logout(req, res, next) {
   try {
     const authHeader = req.headers["authorization"];
     const accessToken = authHeader && authHeader.split(" ")[1];
@@ -170,6 +167,6 @@ export async function logout(req, res) {
 
     return res.json({ message: "Logout realizado com sucesso" });
   } catch (err) {
-    res.status(500).json({ error: "Erro interno no logout" });
+    next(err);
   }
 }

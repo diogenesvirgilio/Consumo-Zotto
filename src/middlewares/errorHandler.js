@@ -8,8 +8,9 @@ export const errorHandler = (err, req, res, next) => {
       details: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
-  res.status(500).json({
-    error: "Erro interno do servidor",
-    requestId: req.id,
-  });
+  me -
+    auto({
+      error: "Erro interno do servidor",
+      requestId: req.id,
+    });
 };

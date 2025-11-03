@@ -6,7 +6,7 @@ import {
   updateFalta,
 } from "../models/faltasModel.js";
 
-export async function listFaltas(req, res) {
+export async function listFaltas(req, res, next) {
   try {
     const faltas = await getFaltas();
     res.json(faltas);
@@ -16,7 +16,7 @@ export async function listFaltas(req, res) {
 }
 
 //Busca uma falta por requisição.
-export async function findFalta(req, res) {
+export async function findFalta(req, res, next) {
   try {
     const { requisicao } = req.params;
     const falta = await getFaltasByRequisicao(requisicao);
@@ -29,7 +29,7 @@ export async function findFalta(req, res) {
   }
 }
 
-export async function registerFalta(req, res) {
+export async function registerFalta(req, res, next) {
   try {
     const {
       falta,
@@ -57,7 +57,7 @@ export async function registerFalta(req, res) {
   }
 }
 
-export async function handleUpdateFalta(req, res) {
+export async function handleUpdateFalta(req, res, next) {
   try {
     const { id } = req.params;
     const {
@@ -90,7 +90,7 @@ export async function handleUpdateFalta(req, res) {
   }
 }
 
-export async function removeFalta(req, res) {
+export async function removeFalta(req, res, next) {
   try {
     const { id } = req.params;
     await deleteFalta(id);

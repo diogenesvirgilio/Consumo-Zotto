@@ -12,7 +12,7 @@ import {
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function listUsuarios(req, res) {
+export async function listUsuarios(req, res, next) {
   try {
     const usuarios = await getUsuarios();
     const usuariosSemSenha = usuarios.map((u) => {
@@ -25,7 +25,7 @@ export async function listUsuarios(req, res) {
   }
 }
 
-export async function findUsuario(req, res) {
+export async function findUsuario(req, res, next) {
   try {
     const { id } = req.params;
     const usuario = await getUsuariosById(id);
@@ -39,7 +39,7 @@ export async function findUsuario(req, res) {
   }
 }
 
-export async function registerUsuario(req, res) {
+export async function registerUsuario(req, res, next) {
   try {
     const { nome, email, senha, role } = req.body;
     if (!["user", "admin"].includes(role)) {
@@ -54,7 +54,7 @@ export async function registerUsuario(req, res) {
   }
 }
 
-export async function handleUpdateUsuario(req, res) {
+export async function handleUpdateUsuario(req, res, next) {
   try {
     const { id } = req.params;
     const { nome, email, senha, role } = req.body;
@@ -90,41 +90,11 @@ export async function handleUpdateUsuario(req, res) {
   }
 }
 
-export async function removeUsuario(req, res) {
+export async function removeUsuario(req, res, next) {
   try {
     const { id } = req.params;
     await deleteUsuario(id);
     res.json({ message: "Usuário removido com sucesso" });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function loginUsuario(req, res) {
-  try {
-    const { email, senha } = req.body;
-    const usuario = await getUsuarioByEmail(email);
-    if (!usuario) {
-      return res.status(401).json({ message: "Credenciais inválidas" });
-    }
-    const senhaValida = await bcrypt.compare(senha, usuario.senha_hash);
-    if (!senhaValida) {
-      return res.status(401).json({ message: "Credenciais inválidas" });
-    }
-
-    const token = jwt.sign(
-      { id: usuario.id, email: usuario.email },
-      JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    res.json({
-      token,
-      usuario: {
-        id: usuario.id,
-        nome: usuario.nome,
-        email: usuario.email,
-      },
-    });
   } catch (err) {
     next(err);
   }

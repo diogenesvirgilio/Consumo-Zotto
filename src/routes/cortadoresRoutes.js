@@ -14,7 +14,6 @@ router.post(
   "/",
   verifyToken,
   authorizeRoles("admin"),
-  authenticateToken,
   cortadoresController.registerCortador
 );
 router.put("/:id", cortadoresController.handleUpdateCortador);

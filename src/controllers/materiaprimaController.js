@@ -6,7 +6,7 @@ import {
   deleteMateriaprima,
 } from "../models/materiaprimaModel.js";
 
-export async function listMateriasprima(req, res) {
+export async function listMateriasprima(req, res, next) {
   try {
     const materiaprima = await getMateriaprima();
     res.json(materiaprima);
@@ -15,7 +15,7 @@ export async function listMateriasprima(req, res) {
   }
 }
 
-export async function findMateriaprima(req, res) {
+export async function findMateriaprima(req, res, next) {
   try {
     const { id } = req.params;
     const materiaprima = await getMateriaprimaById(id);
@@ -28,7 +28,7 @@ export async function findMateriaprima(req, res) {
   }
 }
 
-export async function registerMateriaprima(req, res) {
+export async function registerMateriaprima(req, res, next) {
   try {
     const { nome } = req.body;
     const newMateriaprima = await createMateriaprima(nome);
@@ -38,7 +38,7 @@ export async function registerMateriaprima(req, res) {
   }
 }
 
-export async function handleUpdateMateriaprima(req, res) {
+export async function handleUpdateMateriaprima(req, res, next) {
   try {
     const { id } = req.params;
     const { nome } = req.body;
@@ -52,7 +52,7 @@ export async function handleUpdateMateriaprima(req, res) {
   }
 }
 
-export async function removeMateriaprima(req, res) {
+export async function removeMateriaprima(req, res, next) {
   try {
     const { id } = req.params;
     await deleteMateriaprima(id);

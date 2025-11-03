@@ -27,9 +27,7 @@ router.delete(
   "/:id",
   verifyToken,
   authorizeRoles("admin"),
-  authenticateToken,
   usuariosController.removeUsuario
 );
-router.post("/login", usuariosController.loginUsuario);
 
 export default router;

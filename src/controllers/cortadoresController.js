@@ -6,7 +6,7 @@ import {
   deleteCortador,
 } from "../models/cortadoresModel.js";
 
-export async function listCortadores(req, res) {
+export async function listCortadores(req, res, next) {
   try {
     const cortadores = await getCortadores();
     res.json(cortadores);
@@ -15,7 +15,7 @@ export async function listCortadores(req, res) {
   }
 }
 
-export async function findCortador(req, res) {
+export async function findCortador(req, res, next) {
   try {
     const { id } = req.params;
     const cortador = await getCortadorById(id);
@@ -28,7 +28,7 @@ export async function findCortador(req, res) {
   }
 }
 
-export async function registerCortador(req, res) {
+export async function registerCortador(req, res, next) {
   try {
     const { nome, nivel_experiencia } = req.body;
     const newCortador = await createCortador(nome, nivel_experiencia);
@@ -38,7 +38,7 @@ export async function registerCortador(req, res) {
   }
 }
 
-export async function handleUpdateCortador(req, res) {
+export async function handleUpdateCortador(req, res, next) {
   try {
     const { id } = req.params;
     const { nome, nivel_experiencia } = req.body;
@@ -56,7 +56,7 @@ export async function handleUpdateCortador(req, res) {
   }
 }
 
-export async function removeCortador(req, res) {
+export async function removeCortador(req, res, next) {
   try {
     const { id } = req.params;
     await deleteCortador(id);
