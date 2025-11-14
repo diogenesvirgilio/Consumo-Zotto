@@ -1,7 +1,12 @@
 import winston from "winston";
 import path from "path";
+import fs from "fs";
 
 const logDir = path.join(process.cwd(), "logs");
+
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || "info",
