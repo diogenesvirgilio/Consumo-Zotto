@@ -3,6 +3,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import logger from "./utils/logger.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 
 import "./database/db.js";
 import cortadoresRoutes from "./routes/cortadoresRoutes.js";
@@ -27,10 +30,44 @@ const __dirname = path.dirname(__filename);
 
 //Middlawares globais
 app.use(corsMiddleware);
-app.use(express.json());
+app.disable("x-powered-by");
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+          "'unsafe-inline'",
+        ],
+        imgSrc: ["'self'", "data:", "https:"],
+        fontSrc: [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        connectSrc: ["'self'"],
+      },
+    },
+  })
+);
+app.use(cookieParser());
+app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(sanitizeMiddleware);
 app.use(express.static(path.join(__dirname, "../public")));
+
+// Rate limiter global (aplicações específicas podem ter limites próprios)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(globalLimiter);
 
 //Rotas
 app.use("/cortadores", authenticateToken, logRequest, cortadoresRoutes);
@@ -47,15 +84,9 @@ app.get("/", (req, res) => {
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
-  try {
-    app.listen(PORT, () => {
-      console.log(`server.js: app.listen callback fired on port ${PORT}`);
-      logger.info(`Servidor rodando na porta ${PORT}`);
-    });
-  } catch (err) {
-    console.error("server.js: erro ao iniciar server", err);
-    throw err;
-  }
+  app.listen(PORT, () => {
+    logger.info(`Servidor rodando na porta ${PORT}`);
+  });
 }
 
 export default app;

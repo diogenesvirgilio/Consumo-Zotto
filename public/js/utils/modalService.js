@@ -5,33 +5,39 @@ export function showModalSistema({
   confirmacao = false,
   callbackConfirmar = null,
 }) {
-  document.getElementById("modalSistema_titulo").textContent = titulo;
-  document.getElementById("modalSistema_conteudo").textContent = conteudo;
+  // Pegando elementos só uma vez
+  const modalEl = document.getElementById("modalSistema");
+  const tituloEl = document.getElementById("modalSistema_titulo");
+  const conteudoEl = document.getElementById("modalSistema_conteudo");
+  const listaErrosEl = document.getElementById("modalSistema_listaErros");
+  const btnConfirmarEl = document.getElementById("modalSistema_btnConfirmar");
 
-  const listaErros = document.getElementById("modalSistema_listaErros");
+  // Atualiza título e texto
+  tituloEl.textContent = titulo;
+  conteudoEl.textContent = conteudo;
+
+  // Exibir erros (se existirem)
   if (erros.length > 0) {
-    listaErros.innerHTML = erros.map((e) => `<li>${e}</li>`).join("");
-    listaErros.classList.remove("d-none");
+    listaErrosEl.innerHTML = erros.map((e) => `<li>${e}</li>`).join("");
+    listaErrosEl.classList.remove("d-none");
   } else {
-    listaErros.innerHTML = "";
-    listaErros.classList.remove("d-none");
+    listaErrosEl.innerHTML = "";
+    listaErrosEl.classList.add("d-none");
   }
 
-  const btnConfirmar = document.getElementById("modalSistema_btnConfirmar");
+  // Controle do botão de confirmação
   if (confirmacao) {
-    btnConfirmar.classList.remove("d-none");
-    btnConfirmar.onclick = async () => {
+    btnConfirmarEl.classList.remove("d-none");
+    btnConfirmarEl.onclick = async () => {
       if (callbackConfirmar) await callbackConfirmar();
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById("modalSistema")
-      );
-      if (modal) modal.hide();
+      modalInstance.hide();
     };
   } else {
-    btnConfirmar.classList.add("d-none");
-    btnConfirmar.onclick = null;
+    btnConfirmarEl.classList.add("d-none");
+    btnConfirmarEl.onclick = null;
   }
 
-  const modal = new bootstrap.Modal(document.getElementById("modalSistema"));
-  modal.show();
+  // Cria apenas UMA instância do modal
+  const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+  modalInstance.show();
 }

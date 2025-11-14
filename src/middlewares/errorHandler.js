@@ -1,16 +1,23 @@
-export const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
+import logger from "../utils/logger.js";
 
-  if (err.name === "ValidationError") {
+export const errorHandler = (err, req, res, next) => {
+  // Log completo no servidor (stack em dev)
+  logger.error(err instanceof Error ? err.stack || err.message : err);
+
+  if (err && err.name === "ValidationError") {
     return res.status(400).json({
       error: "Dados inválidos",
-      details: details,
       details: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
-  me -
-    auto({
-      error: "Erro interno do servidor",
-      requestId: req.id,
-    });
+
+  const status = err && err.status ? err.status : 500;
+  const message =
+    process.env.NODE_ENV === "production"
+      ? "Erro interno do servidor"
+      : (err && err.message) || "Erro interno do servidor";
+  const details =
+    process.env.NODE_ENV === "production" ? undefined : err && err.stack;
+
+  res.status(status).json({ error: message, details });
 };

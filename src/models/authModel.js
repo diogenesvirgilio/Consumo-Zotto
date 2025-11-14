@@ -7,26 +7,30 @@ export async function findUsuarioByEmail(email) {
   return result.rows[0];
 }
 
-export async function saveRefreshToken(usuarioId, token, expiracao) {
+export async function saveRefreshToken(usuarioId, tokenHash, expiracao) {
+  /* Usamos ON CONFLICT para prevenir erro de unique violation.*/
   const result = await pool.query(
-    "INSERT INTO refresh_tokens (usuario_id, token, expiracao) VALUES ($1, $2, $3) RETURNING *",
-    [usuarioId, token, expiracao]
+    `INSERT INTO refresh_tokens (usuario_id, token_hash, expiracao)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (token_hash) DO UPDATE SET expiracao = EXCLUDED.expiracao   
+     RETURNING *`,
+    [usuarioId, tokenHash, expiracao]
   );
   return result.rows[0];
 }
 
-export async function findRefreshToken(token) {
+export async function findRefreshToken(tokenHash) {
   const result = await pool.query(
-    "SELECT * FROM refresh_tokens WHERE token = $1",
-    [token]
+    "SELECT * FROM refresh_tokens WHERE token_hash = $1",
+    [tokenHash]
   );
   return result.rows[0];
 }
 
-export async function deleteRefreshToken(token) {
+export async function deleteRefreshToken(tokenHash) {
   const result = await pool.query(
-    "DELETE FROM refresh_tokens WHERE token = $1",
-    [token]
+    "DELETE FROM refresh_tokens WHERE token_hash = $1",
+    [tokenHash]
   );
   return result.rowCount;
 }
@@ -39,10 +43,10 @@ export async function deleteRefreshTokenTokensByUsuarioId(usuarioId) {
   return result.rowCount;
 }
 
-export async function updateRefreshTokenExpiration(token, novaExpiracao) {
+export async function updateRefreshTokenExpiration(tokenHash, novaExpiracao) {
   const result = await pool.query(
-    "UPDATE refresh_tokens SET expiracao = $1 WHERE token = $2 RETURNING *",
-    [novaExpiracao, token]
+    "UPDATE refresh_tokens SET expiracao = $1 WHERE token_hash = $2 RETURNING *",
+    [novaExpiracao, tokenHash]
   );
   return result.rows[0];
 }
