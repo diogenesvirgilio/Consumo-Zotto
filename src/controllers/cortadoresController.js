@@ -59,7 +59,12 @@ export async function handleUpdateCortador(req, res, next) {
 export async function removeCortador(req, res, next) {
   try {
     const { id } = req.params;
-    await deleteCortador(id);
+    const cortador = await deleteCortador(id);
+
+    if (!cortador) {
+      return res.status(404).json({ message: "Cortador não encontrado" });
+    }
+
     res.json({ message: "Cortador removido com sucesso" });
   } catch (err) {
     next(err);
