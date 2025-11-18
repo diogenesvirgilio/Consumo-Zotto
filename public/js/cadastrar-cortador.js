@@ -10,16 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const form = document.getElementById("cadastroCortadorForm");
-  const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
-
   if (!form) return;
+
+  const submitBtn = form.querySelector('button[type="submit"]');
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (submitBtn) submitBtn.disabled = true;
 
-    const nome = document.getElementById("nome").value.trim();
+    const nome = document.getElementById("nome")?.value.trim();
     const roleExp = document.getElementById("roleExp").value;
 
     if (!nome || !roleExp) {
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Preencha todos os campos obrigatórios.",
       });
+
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
+
       if (response.ok) {
         form.reset();
         showModalSistema({

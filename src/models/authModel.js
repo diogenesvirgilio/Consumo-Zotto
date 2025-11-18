@@ -4,11 +4,11 @@ export async function findUsuarioByEmail(email) {
   const result = await pool.query("SELECT * FROM usuarios WHERE email =$1", [
     email,
   ]);
-  return result.rows[0];
+  return result.rowCount ? result.rows[0] : null;
 }
 
 export async function saveRefreshToken(usuarioId, tokenHash, expiracao) {
-  /* Usamos ON CONFLICT para prevenir erro de unique violation.*/
+  // Garantir update quando já existir um token com mesmo hash
   const result = await pool.query(
     `INSERT INTO refresh_tokens (usuario_id, token_hash, expiracao)
      VALUES ($1, $2, $3)
@@ -35,7 +35,7 @@ export async function deleteRefreshToken(tokenHash) {
   return result.rowCount;
 }
 
-export async function deleteRefreshTokenTokensByUsuarioId(usuarioId) {
+export async function deleteRefreshTokensByUsuarioId(usuarioId) {
   const result = await pool.query(
     "DELETE FROM refresh_tokens WHERE usuario_id = $1",
     [usuarioId]
@@ -65,18 +65,4 @@ export async function isTokenBlacklisted(token) {
     [token]
   );
   return result.rows[0];
-}
-
-export async function logRequest(req, res, next) {
-  try {
-    if (req.usuario) {
-      await pool.query(
-        "INSERT INTO logs (usuario_id, rota, metodo) VALUES ($1, $2, $3)",
-        [req.usuario.id, req.originalUrl, req.method]
-      );
-    }
-  } catch (err) {
-    res.status(403).json({ error: "Erro ao inserir o log" });
-  }
-  next();
 }

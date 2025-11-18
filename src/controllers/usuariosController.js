@@ -1,9 +1,7 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import {
   createUsuario,
   deleteUsuario,
-  getUsuarioByEmail,
   getUsuarios,
   getUsuariosById,
   updateUsuario,

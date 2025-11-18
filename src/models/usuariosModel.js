@@ -28,7 +28,6 @@ export async function updateUsuario(id, nome, email, senha_hash, role) {
 
 export async function deleteUsuario(id) {
   await pool.query("DELETE FROM usuarios WHERE id = $1", [id]);
-  return { message: "Usuário deletado com sucesso" };
 }
 
 export async function getUsuarioByEmail(email) {

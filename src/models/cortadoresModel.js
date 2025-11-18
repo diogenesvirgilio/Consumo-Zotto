@@ -30,5 +30,5 @@ export async function updateCortador(id, nome, nivel_experiencia) {
 
 export async function deleteCortador(id) {
   const result = await pool.query("DELETE FROM cortadores WHERE id = $1", [id]);
-  return result.rows[0];
+  return result.rowCount;
 }

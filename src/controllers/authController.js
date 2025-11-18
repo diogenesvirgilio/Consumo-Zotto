@@ -147,7 +147,7 @@ export const logout = async (req, res) => {
   if (allSessions) {
     const userId = req.usuario?.id;
     if (userId) {
-      await deleteRefreshTokenTokensByUsuarioId(userId);
+      await deleteRefreshTokensByUsuarioId(userId);
     }
   } else if (refreshToken) {
     await deleteRefreshToken(hashToken(refreshToken));

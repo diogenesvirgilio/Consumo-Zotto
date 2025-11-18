@@ -20,9 +20,11 @@ export async function findFalta(req, res, next) {
   try {
     const { requisicao } = req.params;
     const falta = await getFaltasByRequisicao(requisicao);
+
     if (!falta) {
       return res.status(404).json({ message: "Falta não encontrada" });
     }
+
     res.json(falta);
   } catch (err) {
     next(err);
@@ -31,26 +33,18 @@ export async function findFalta(req, res, next) {
 
 export async function registerFalta(req, res, next) {
   try {
-    const {
-      falta,
-      data,
-      programacao,
-      dia_reuniao,
-      requisicao,
-      obs,
-      materia_prima_id,
-      cortador_id,
-    } = req.body;
+    const dados = req.body;
     const newFalta = await createFalta(
-      falta,
-      data,
-      programacao,
-      dia_reuniao,
-      requisicao,
-      obs,
-      materia_prima_id,
-      cortador_id
+      dados.falta,
+      dados.data,
+      dados.programacao,
+      dados.dia_reuniao,
+      dados.requisicao,
+      dados.obs,
+      dados.materia_prima_id,
+      dados.cortador_id
     );
+
     res.status(201).json(newFalta);
   } catch (err) {
     next(err);
@@ -60,30 +54,24 @@ export async function registerFalta(req, res, next) {
 export async function handleUpdateFalta(req, res, next) {
   try {
     const { id } = req.params;
-    const {
-      falta,
-      data,
-      programacao,
-      dia_reuniao,
-      requisicao,
-      obs,
-      materia_prima_id,
-      cortador_id,
-    } = req.body;
+    const dados = req.body;
+
     const faltaAtualizada = await updateFalta(
       id,
-      falta,
-      data,
-      programacao,
-      dia_reuniao,
-      requisicao,
-      obs,
-      materia_prima_id,
-      cortador_id
+      dados.falta,
+      dados.data,
+      dados.programacao,
+      dados.dia_reuniao,
+      dados.requisicao,
+      dados.obs,
+      dados.materia_prima_id,
+      dados.cortador_id
     );
+
     if (!faltaAtualizada) {
       return res.status(404).json({ message: "Falta não encontrada" });
     }
+
     res.json(faltaAtualizada);
   } catch (err) {
     next(err);
@@ -94,7 +82,8 @@ export async function removeFalta(req, res, next) {
   try {
     const { id } = req.params;
     await deleteFalta(id);
-    res.json({ message: "Cortador removido com sucesso" });
+
+    res.json({ message: "Falta removida com sucesso" });
   } catch (err) {
     next(err);
   }
