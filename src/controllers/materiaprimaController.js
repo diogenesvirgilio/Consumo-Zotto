@@ -44,7 +44,7 @@ export async function handleUpdateMateriaprima(req, res, next) {
     const { nome } = req.body;
     const materiaprimaAtualizada = await updateMateriaprima(id, nome);
     if (!materiaprimaAtualizada) {
-      return res.status(404).json({ message: "Materia Prima não encontrada" });
+      return res.status(404).json({ message: "Matéria Prima não encontrada" });
     }
     res.json(materiaprimaAtualizada);
   } catch (err) {
