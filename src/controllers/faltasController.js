@@ -15,7 +15,6 @@ export async function listFaltas(req, res, next) {
   }
 }
 
-//Busca uma falta por requisição.
 export async function findFalta(req, res, next) {
   try {
     const { requisicao } = req.params;
@@ -34,16 +33,25 @@ export async function findFalta(req, res, next) {
 export async function registerFalta(req, res, next) {
   try {
     const dados = req.body;
-    const newFalta = await createFalta(
-      dados.falta,
-      dados.data,
-      dados.programacao,
-      dados.dia_reuniao,
-      dados.requisicao,
-      dados.obs,
-      dados.materia_prima_id,
-      dados.cortador_id
-    );
+    const faltaNormalizado = normalizarDecimal(dados.falta);
+
+    // Validar formato decimal
+    if (!validarDecimal(faltaNormalizado)) {
+      return res.status(400).json({
+        error: "Falta deve ser um número decimal válido (ex: 10.5)",
+      });
+    }
+
+    const newFalta = await createFalta({
+      falta: faltaNormalizado,
+      data: dados.data,
+      programacao: dados.programacao,
+      diaReuniao: dados.diaReuniao,
+      requisicao: dados.requisicao,
+      obs: dados.obs,
+      materiaPrimaId: Number(dados.materiaPrima),
+      cortadorId: Number(dados.cortador),
+    });
 
     res.status(201).json(newFalta);
   } catch (err) {
@@ -55,18 +63,25 @@ export async function handleUpdateFalta(req, res, next) {
   try {
     const { id } = req.params;
     const dados = req.body;
+    const faltaNormalizado = normalizarDecimal(dados.falta);
 
-    const faltaAtualizada = await updateFalta(
-      id,
-      dados.falta,
-      dados.data,
-      dados.programacao,
-      dados.dia_reuniao,
-      dados.requisicao,
-      dados.obs,
-      dados.materia_prima_id,
-      dados.cortador_id
-    );
+    // Validar formato decimal
+    if (!validarDecimal(faltaNormalizado)) {
+      return res.status(400).json({
+        error: "Falta deve ser um número decimal válido (ex: 10.5)",
+      });
+    }
+
+    const faltaAtualizada = await updateFalta(id, {
+      falta: faltaNormalizado,
+      data: dados.data,
+      programacao: dados.programacao,
+      diaReuniao: dados.diaReuniao,
+      requisicao: dados.requisicao,
+      obs: dados.obs,
+      materiaPrimaId: dados.materiaPrimaId,
+      cortadorId: dados.cortadorId,
+    });
 
     if (!faltaAtualizada) {
       return res.status(404).json({ message: "Falta não encontrada" });
@@ -87,4 +102,20 @@ export async function removeFalta(req, res, next) {
   } catch (err) {
     next(err);
   }
+}
+
+function normalizarDecimal(valor) {
+  if (!valor) return valor;
+  // Remove espaços
+  valor = valor.toString().trim();
+  // Remove pontos (separadores de milhares)
+  valor = valor.replace(/\./g, "");
+  // Substitui vírgula por ponto (separador decimal)
+  valor = valor.replace(",", ".");
+  return valor;
+}
+
+function validarDecimal(valor) {
+  const regex = /^\d+(\.\d{1,2})?$/;
+  return regex.test(valor.toString());
 }

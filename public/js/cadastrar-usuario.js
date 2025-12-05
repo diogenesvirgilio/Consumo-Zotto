@@ -1,4 +1,4 @@
-import { BASE_URL } from "../js/api/config.js";
+import { BASE_URL } from "./api/config.js";
 import { showModalSistema } from "./utils/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
 import { requireAuth } from "./utils/auth-guard.js";

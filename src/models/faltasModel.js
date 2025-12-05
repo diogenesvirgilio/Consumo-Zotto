@@ -1,33 +1,41 @@
 import pool from "../database/db.js";
 
 export async function getFaltas() {
-  const { rows } = await pool.query("SELECT * FROM faltas ORDER BY id ASC");
+  const query = `
+  SELECT 
+    f.*,
+    mp.nome AS materia_prima_nome,
+    c.nome AS cortador_nome
+  FROM faltas f
+  LEFT JOIN materia_prima mp ON mp.id = f.materia_prima_id 
+  LEFT JOIN cortadores c ON c.id = f.cortador_id
+  ORDER BY f.id ASC
+  `;
+
+  const { rows } = await pool.query(query);
   return rows;
 }
 
-//Busca uma falta por requisição.
 export async function getFaltasByRequisicao(requisicao) {
   const { rows } = await pool.query(
     "SELECT * FROM faltas WHERE requisicao = $1",
     [requisicao]
   );
-  return rows[0];
+  return rows[0] || null;
 }
 
-export async function createFalta(data) {
-  const {
-    falta,
-    data: dataFalta,
-    programacao,
-    dia_reuniao,
-    requisicao,
-    obs,
-    materia_prima_id,
-    cortador_id,
-  } = data;
-
+export async function createFalta({
+  falta,
+  data,
+  programacao,
+  diaReuniao,
+  requisicao,
+  obs,
+  materiaPrimaId,
+  cortadorId,
+}) {
   const query = `
-    "INSERT INTO faltas 
+    INSERT INTO faltas 
     (falta, data, programacao, dia_reuniao, requisicao, obs, materia_prima_id, cortador_id) 
     VALUES 
     ($1, $2, $3, $4, $5, $6, $7, $8) 
@@ -38,29 +46,30 @@ export async function createFalta(data) {
     falta,
     data,
     programacao,
-    dia_reuniao,
+    diaReuniao,
     requisicao,
     obs,
-    materia_prima_id,
-    cortador_id,
+    materiaPrimaId,
+    cortadorId,
   ];
 
   const { rows } = await pool.query(query, values);
-  return rows[0];
+  return rows[0] || null;
 }
 
-export async function updateFalta(id, data) {
-  const {
+export async function updateFalta(
+  id,
+  {
     falta,
-    data: dataFalta,
+    data,
     programacao,
-    dia_reuniao,
+    diaReuniao,
     requisicao,
     obs,
-    materia_prima_id,
-    cortador_id,
-  } = data;
-
+    materiaPrimaId,
+    cortadorId,
+  }
+) {
   const query = `
     UPDATE faltas 
     SET falta = $1, 
@@ -78,16 +87,16 @@ export async function updateFalta(id, data) {
     falta,
     data,
     programacao,
-    dia_reuniao,
+    diaReuniao,
     requisicao,
     obs,
-    materia_prima_id,
-    cortador_id,
+    materiaPrimaId,
+    cortadorId,
     id,
   ];
 
   const { rows } = await pool.query(query, values);
-  return rows[0];
+  return rows[0] || null;
 }
 
 export async function deleteFalta(id) {
