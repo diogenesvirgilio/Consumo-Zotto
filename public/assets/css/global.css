@@ -46,6 +46,12 @@ body {
   overflow-x: auto;   
 } 
 
+.tabela-geral th, 
+.tabela-geral td {
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
 .tabela-geral tr.editando > * {
   background-color: #fff3cd !important; 
   transition: background-color 0.3s ease;

@@ -76,7 +76,8 @@ export async function carregarFaltas() {
           removerAcentos(u.requisicao.toLowerCase()).includes(
             removerAcentos(requisicao)
           )) &&
-        (!materiaPrima || u.materia_prima_nome.toLowerCase() === materiaPrima) &&
+        (!materiaPrima ||
+          u.materia_prima_nome.toLowerCase() === materiaPrima) &&
         (!cortador || u.cortador_nome.toLowerCase() === cortador)
       );
     });
@@ -107,7 +108,6 @@ function preencherTabela(faltas) {
         <td>${u.cortador_nome || "N/A"}</td>
         <td>${u.falta}</td>
         <td>${u.data ? new Date(u.data).toLocaleDateString() : ""}</td>
-        <td>${u.dia_reuniao || "N/A"}</td>
         <td>${u.programacao || "N/A"}</td>
         <td>${u.requisicao || "N/A"}</td>
         <td>${u.obs || "N/A"}</td>
