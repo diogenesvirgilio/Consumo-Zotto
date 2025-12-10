@@ -68,12 +68,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("cadastroFaltasForm");
   if (!form) return;
 
-  const submitBtn = form.querySelector('button[type="submit"]');
+  const btnCadastrar = document.getElementById("btnCadastrarFalta");
+  const btnPesquisar = document.getElementById("btnPesquisarFaltas");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  if (btnCadastrar) {
+    btnCadastrar.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await cadastrarFalta();
+    });
+  }
 
-    if (submitBtn) submitBtn.disabled = true;
+  if (btnPesquisar) {
+    btnPesquisar.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await carregarFaltas();
+    });
+  }
+
+  async function cadastrarFalta() {
+    if (btnCadastrar) btnCadastrar.disabled = true;
 
     const materiaPrima = document.getElementById("materiaPrima")?.value;
     const cortador = document.getElementById("cortador")?.value;
@@ -94,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Preencha todos os campos obrigatórios.",
       });
-      if (submitBtn) submitBtn.disabled = false;
+      if (btnCadastrar) btnCadastrar.disabled = false;
       return;
     }
 
@@ -105,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: "Atenção",
         conteudo: "Falta deve ser um número válido (ex: 10,5 ou 10.5).",
       });
-      if (submitBtn) submitBtn.disabled = false;
+      if (btnCadastrar) btnCadastrar.disabled = false;
       return;
     }
 
@@ -146,27 +159,24 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       showModalSistema({
         titulo: "Erro",
-        conteudo: "Erro !",
+        conteudo: "Erro ao cadastrar falta!",
       });
     } finally {
-      if (submitBtn) submitBtn.disabled = false;
+      if (btnCadastrar) btnCadastrar.disabled = false;
     }
-  });
+  }
 });
 
 function normalizarDecimal(valor) {
   if (!valor) return valor;
-  // Remove espaços
   valor = valor.trim();
-  // Se não contém vírgula nem ponto, retorna como está
+
   if (!valor.includes(",") && !valor.includes(".")) {
     return valor;
   }
-  // Detecta se usa vírgula como decimal
+
   if (valor.includes(",")) {
-    // Remove pontos (separadores de milhares) - mantém a vírgula
     valor = valor.replace(/\./g, "");
-    // Substitui vírgula por ponto (separador decimal padrão)
     valor = valor.replace(",", ".");
   }
   return valor;
