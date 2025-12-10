@@ -106,12 +106,16 @@ export async function removeFalta(req, res, next) {
 
 function normalizarDecimal(valor) {
   if (!valor) return valor;
-  // Remove espaços
   valor = valor.toString().trim();
-  // Remove pontos (separadores de milhares)
-  valor = valor.replace(/\./g, "");
-  // Substitui vírgula por ponto (separador decimal)
-  valor = valor.replace(",", ".");
+
+  if (!valor.includes(",") && !valor.includes(".")) {
+    return valor;
+  }
+
+  if (valor.includes(",")) {
+    valor = valor.replace(/\./g, "");
+    valor = valor.replace(",", ".");
+  }
   return valor;
 }
 

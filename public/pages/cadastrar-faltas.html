@@ -153,7 +153,7 @@
 
       <div class="col-md-2">
         <label for="data" class="form-label">Data de Cadastro</label>
-        <input type="date" class="form-control" id="data" name="data" required>
+        <input type="date" class="form-control" id="data" name="data">
       </div>
 
       <div class="col-md-3">
@@ -181,14 +181,18 @@
     </div>
   
     <div class="row mt-3">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="d-flex gap-2">
           <button type="submit" class="btn btn-primary w-100" id="btnCadastrarFalta">
             <i class="fas fa-paper-plane"></i> Enviar
           </button>
+          <button
+              type="submit" class="btn btn-primary w-100" id="btnPesquisarCliente">
+              <i class="fas fa-paper-plane"></i> Pesquisar
+          </button>
           <button type="reset" class="btn btn-secondary w-100" id="btnLimparFalta">
             <i class="fas fa-eraser"></i> Limpar
-          </button>
+          </button> 
         </div>
       </div>    
     </div>
@@ -205,8 +209,8 @@
                   <th>Matéria Prima</th>
                   <th>Cortador</th>
                   <th>Falta</th>
-                  <th>Data Cadastro</th>
-                  <th>Dia Reunião</th>
+                  <th>Data</th>
+                  <th>Reunião</th>
                   <th>Programação</th>
                   <th>Requisição</th>
                   <th>Observação</th>

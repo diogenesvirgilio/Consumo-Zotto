@@ -158,10 +158,17 @@ function normalizarDecimal(valor) {
   if (!valor) return valor;
   // Remove espaços
   valor = valor.trim();
-  // Remove pontos (separadores de milhares)
-  valor = valor.replace(/\./g, "");
-  // Substitui vírgula por ponto (separador decimal)
-  valor = valor.replace(",", ".");
+  // Se não contém vírgula nem ponto, retorna como está
+  if (!valor.includes(",") && !valor.includes(".")) {
+    return valor;
+  }
+  // Detecta se usa vírgula como decimal
+  if (valor.includes(",")) {
+    // Remove pontos (separadores de milhares) - mantém a vírgula
+    valor = valor.replace(/\./g, "");
+    // Substitui vírgula por ponto (separador decimal padrão)
+    valor = valor.replace(",", ".");
+  }
   return valor;
 }
 

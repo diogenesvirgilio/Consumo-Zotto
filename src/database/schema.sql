@@ -61,7 +61,7 @@ ALTER SEQUENCE public.cortadores_id_seq OWNED BY public.cortadores.id;
 
 CREATE TABLE public.faltas (
     id integer NOT NULL,
-    falta numeric(5,2) NOT NULL,
+    falta numeric(12,2) NOT NULL,
     data date NOT NULL,
     programacao character varying(20) NOT NULL,
     dia_reuniao integer,
