@@ -34,56 +34,63 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function removerAcentos(str) {
+function removerAcentos(str = "") {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+const normalize = (v) => (v || "").toString().toLowerCase();
+
+function normalizarData(d) {
+  if (!d) return "";
+  // força formato yyyy-mm-dd como o input type="date"
+  return new Date(d).toISOString().split("T")[0];
+}
+
 export async function carregarFaltas() {
-  const materiaPrima = document
-    .getElementById("materiaPrima")
-    .value.trim()
-    .toLowerCase();
-  const cortador = document
-    .getElementById("cortador")
-    .value.trim()
-    .toLowerCase();
-  const falta = document.getElementById("falta").value.trim().toLowerCase();
-  const data = document.getElementById("data").value.trim().toLowerCase();
-  const programacao = document
-    .getElementById("programacao")
-    .value.trim()
-    .toLowerCase();
-  const diaReuniao = document
-    .getElementById("diaReuniao")
-    .value.trim()
-    .toLowerCase();
-  const requisicao = document
-    .getElementById("requisicao")
-    .value.trim()
-    .toLowerCase();
-  const observacao = document
-    .getElementById("observacao")
-    .value.trim()
-    .toLowerCase();
+  // valores do formulário
+  let materiaPrima = document.getElementById("materiaPrima").value.trim();
+  const requisicao = normalize(
+    document.getElementById("requisicao").value.trim()
+  );
+  const data = normalize(document.getElementById("data").value.trim());
+
+  // normalizar select
+  if (/^selecione/i.test(materiaPrima)) materiaPrima = "";
+
+  const materiaPrimaRaw = materiaPrima;
+  const materiaPrimaSearch = removerAcentos(materiaPrima).toLowerCase();
+  const materiaPrimaIsId = /^\d+$/.test(materiaPrimaRaw);
 
   try {
     const response = await fetchWithAuth(`${BASE_URL}/faltas`);
     const faltas = await response.json();
 
     const filtrados = faltas.filter((u) => {
-      return (
-        (!requisicao ||
-          removerAcentos(u.requisicao.toLowerCase()).includes(
-            removerAcentos(requisicao)
-          )) &&
-        (!materiaPrima ||
-          u.materia_prima_nome.toLowerCase() === materiaPrima) &&
-        (!cortador || u.cortador_nome.toLowerCase() === cortador)
-      );
+      // pré-processar uma única vez
+      const uRequisicao = normalize(u.requisicao);
+      const uData = normalize(normalizarData(u.data));
+
+      const uMateriaId = (u.materia_prima_id || "").toString();
+      const uMateriaNome = (u.materia_prima_nome || "").toString();
+      const uMateriaNomeSearch = removerAcentos(uMateriaNome).toLowerCase();
+
+      // filtros
+      const matchRequisicao = !requisicao || uRequisicao.includes(requisicao);
+      const matchData = !data || uData.includes(data);
+
+      let matchMateria = true;
+      if (materiaPrimaRaw) {
+        matchMateria = materiaPrimaIsId
+          ? uMateriaId === materiaPrimaRaw
+          : uMateriaNomeSearch.includes(materiaPrimaSearch);
+      }
+
+      return matchRequisicao && matchData && matchMateria;
     });
 
     preencherTabela(filtrados);
   } catch (err) {
+    console.error("Erro ao carregar faltas:", err);
     showModalSistema({
       titulo: "Erro",
       conteudo: "Erro ao carregar faltas.",
