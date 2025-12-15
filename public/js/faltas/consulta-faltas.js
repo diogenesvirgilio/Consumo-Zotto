@@ -93,7 +93,7 @@ export async function carregarFaltas() {
       // filtros
       const matchRequisicao = !requisicao || uRequisicao.includes(requisicao);
       const matchProgramacao =
-        !programacao || uProgramacao.includes(programacao);
+        !programacao || uProgramacao.startsWith(programacao);
       const matchData = !data || uData.includes(data);
 
       let matchMateria = true;
