@@ -47,19 +47,30 @@ function normalizarData(d) {
 }
 
 export async function carregarFaltas() {
-  // valores do formulário
   let materiaPrima = document.getElementById("materiaPrima").value.trim();
+  let cortador = document.getElementById("cortador").value.trim();
+
   const requisicao = normalize(
     document.getElementById("requisicao").value.trim()
   );
+
+  const programacao = normalize(
+    document.getElementById("programacao").value.trim()
+  );
+
   const data = normalize(document.getElementById("data").value.trim());
 
   // normalizar select
   if (/^selecione/i.test(materiaPrima)) materiaPrima = "";
+  if (/^selecione/i.test(cortador)) cortador = "";
 
   const materiaPrimaRaw = materiaPrima;
   const materiaPrimaSearch = removerAcentos(materiaPrima).toLowerCase();
   const materiaPrimaIsId = /^\d+$/.test(materiaPrimaRaw);
+
+  const cortadorRaw = cortador;
+  const cortadorSearch = removerAcentos(cortador).toLowerCase();
+  const cortadorIsId = /^\d+$/.test(cortadorRaw);
 
   try {
     const response = await fetchWithAuth(`${BASE_URL}/faltas`);
@@ -68,14 +79,21 @@ export async function carregarFaltas() {
     const filtrados = faltas.filter((u) => {
       // pré-processar uma única vez
       const uRequisicao = normalize(u.requisicao);
+      const uProgramacao = normalize(u.programacao);
       const uData = normalize(normalizarData(u.data));
 
       const uMateriaId = (u.materia_prima_id || "").toString();
       const uMateriaNome = (u.materia_prima_nome || "").toString();
       const uMateriaNomeSearch = removerAcentos(uMateriaNome).toLowerCase();
 
+      const uCortadorId = (u.cortador_id || "").toString();
+      const uCortadorNome = (u.cortador_nome || "").toString();
+      const uCortadorNomeSearch = removerAcentos(uCortadorNome).toLowerCase();
+
       // filtros
       const matchRequisicao = !requisicao || uRequisicao.includes(requisicao);
+      const matchProgramacao =
+        !programacao || uProgramacao.includes(programacao);
       const matchData = !data || uData.includes(data);
 
       let matchMateria = true;
@@ -85,7 +103,20 @@ export async function carregarFaltas() {
           : uMateriaNomeSearch.includes(materiaPrimaSearch);
       }
 
-      return matchRequisicao && matchData && matchMateria;
+      let matchCortador = true;
+      if (cortadorRaw) {
+        matchCortador = cortadorIsId
+          ? uCortadorId === cortadorRaw
+          : uCortadorNomeSearch.includes(cortadorSearch);
+      }
+
+      return (
+        matchRequisicao &&
+        matchProgramacao &&
+        matchData &&
+        matchMateria &&
+        matchCortador
+      );
     });
 
     preencherTabela(filtrados);
