@@ -1,7 +1,7 @@
 import { BASE_URL } from "./api/config.js";
-import { showModalSistema } from "./utils/modalService.js";
+import { showModalSistema } from "./services/modalService.js";
 import { fetchWithAuth } from "./api/authRefresh.js";
-import { requireAuth } from "./utils/auth-guard.js";
+import { requireAuth } from "./services/auth-guard.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // verfica se o usuário tem permissão de admin

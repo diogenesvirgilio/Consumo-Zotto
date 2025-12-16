@@ -1,7 +1,7 @@
 import { BASE_URL } from "../api/config.js";
-import { showModalSistema } from "../utils/modalService.js";
+import { showModalSistema } from "../services/modalService.js";
 import { fetchWithAuth } from "../api/authRefresh.js";
-import { getUserFromToken } from "../utils/auth.js";
+import { getUserFromToken } from "../services/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const userNameDisplay = document.getElementById("userNameDisplay");

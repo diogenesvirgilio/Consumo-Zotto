@@ -4,7 +4,7 @@ import {
   setAccessToken,
   clearStorage,
   setRefreshToken,
-} from "../utils/storage.js";
+} from "../services/storage.js";
 import { fetchWithAuth } from "./authRefresh.js";
 
 export async function login(email, senha) {

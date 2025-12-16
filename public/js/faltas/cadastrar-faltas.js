@@ -1,5 +1,5 @@
 import { BASE_URL } from "../api/config.js";
-import { showModalSistema } from "../utils/modalService.js";
+import { showModalSistema } from "../services/modalService.js";
 import { fetchWithAuth } from "../api/authRefresh.js";
 import { carregarFaltas } from "./consulta-faltas.js";
 

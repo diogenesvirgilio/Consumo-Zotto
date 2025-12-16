@@ -1,6 +1,6 @@
-import { setAccessToken, setRefreshToken } from "./utils/storage.js";
+import { setAccessToken, setRefreshToken } from "./services/storage.js";
 import { BASE_URL } from "./api/config.js";
-import { showModalSistema } from "./utils/modalService.js";
+import { showModalSistema } from "./services/modalService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("loginForm");

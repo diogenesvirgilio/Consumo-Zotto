@@ -1,4 +1,4 @@
-import { getUserFromToken, logout } from "./utils/auth.js";
+import { getUserFromToken, logout } from "./services/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = getUserFromToken();

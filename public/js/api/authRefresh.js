@@ -5,8 +5,8 @@ import {
   setAccessToken,
   setRefreshToken,
   clearStorage,
-} from "../utils/storage.js";
-import { showModalSistema } from "../utils/modalService.js";
+} from "../services/storage.js";
+import { showModalSistema } from "../services/modalService.js";
 
 export async function fetchWithAuth(url, options = {}) {
   let accessToken = getAccessToken();
