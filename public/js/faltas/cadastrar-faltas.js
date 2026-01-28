@@ -3,67 +3,78 @@ import { showModalSistema } from "../services/modalService.js";
 import { fetchWithAuth } from "../api/authRefresh.js";
 import { carregarFaltas } from "./consulta-faltas.js";
 
+export async function carregarMateriasPrima(selectEl, selecionadoId = null) {
+  if (!selectEl) return;
+
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/materiaprima`);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || "Erro ao carregar matérias primas");
+    }
+
+    const materias = await response.json();
+
+    selectEl.innerHTML = `<option value="">Selecione...</option>`;
+
+    materias.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.nome || m.descricao || `Matéria #${m.id}`;
+
+      if (selecionadoId && String(m.id) === String(selecionadoId)) {
+        opt.selected = true;
+      }
+
+      selectEl.appendChild(opt);
+    });
+  } catch (err) {
+    showModalSistema({
+      titulo: "Erro",
+      conteudo: "Não foi possível carregar matérias-primas.",
+    });
+  }
+}
+
+export async function carregarCortadores(selectEl, selecionadoId = null) {
+  if (!selectEl) return;
+
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/cortadores`);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || "Erro ao carregar cortadores");
+    }
+
+    const cortadores = await response.json();
+
+    selectEl.innerHTML = `<option value="">Selecione...</option>`;
+
+    cortadores.forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = c.nome || `Cortador #${c.id}`;
+
+      if (selecionadoId && String(c.id) === String(selecionadoId)) {
+        opt.selected = true;
+      }
+
+      selectEl.appendChild(opt);
+    });
+  } catch (err) {
+    showModalSistema({
+      titulo: "Erro",
+      conteudo: "Não foi possível carregar cortadores.",
+    });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  carregarMateriasPrima();
-  carregarCortadores();
+  const selectMateria = document.getElementById("materiaPrima");
+  const selectCortador = document.getElementById("cortador");
 
-  async function carregarMateriasPrima() {
-    const select = document.getElementById("materiaPrima");
-    if (!select) return;
-
-    try {
-      const response = await fetchWithAuth(`${BASE_URL}/materiaprima`);
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.message || "Erro ao carregar matérias primas");
-      }
-
-      const materias = await response.json();
-
-      select.innerHTML = "<option selected>Selecione...</option>";
-
-      materias.forEach((m) => {
-        const opt = document.createElement("option");
-        opt.value = m.id;
-        opt.textContent = m.nome || m.descricao || `Matéria #${m.id}`;
-        select.appendChild(opt);
-      });
-    } catch (err) {
-      showModalSistema({
-        titulo: "Erro",
-        conteudo: "Não foi possível carregar matérias-primas.",
-      });
-    }
-  }
-
-  async function carregarCortadores() {
-    const select = document.getElementById("cortador");
-    if (!select) return;
-
-    try {
-      const response = await fetchWithAuth(`${BASE_URL}/cortadores`);
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.message || "Erro ao carregar cortadores");
-      }
-
-      const cortadores = await response.json();
-
-      select.innerHTML = "<option selected>Selecione...</option>";
-
-      cortadores.forEach((m) => {
-        const opt = document.createElement("option");
-        opt.value = m.id;
-        opt.textContent = m.nome || `Cortador #${m.id}`;
-        select.appendChild(opt);
-      });
-    } catch (err) {
-      showModalSistema({
-        titulo: "Erro",
-        conteudo: "Não foi possível carregar cortadores.",
-      });
-    }
-  }
+  carregarMateriasPrima(selectMateria);
+  carregarCortadores(selectCortador);
 
   const form = document.getElementById("cadastroFaltasForm");
   if (!form) return;

@@ -15,7 +15,7 @@ export async function fetchWithAuth(url, options = {}) {
 
   let response = await fetch(url, options);
 
-  if (response.status === 401 || response.status === 403) {
+  if (response.status === 401) {
     const refreshToken = getRefreshToken();
     if (!refreshToken) {
       clearStorage();

@@ -2,7 +2,7 @@ import pool from "../database/db.js";
 
 export async function getMateriaprima() {
   const result = await pool.query(
-    "SELECT * FROM materia_prima ORDER BY id ASC"
+    "SELECT * FROM materia_prima ORDER BY nome ASC",
   );
   return result.rows;
 }
@@ -17,7 +17,7 @@ export async function getMateriaprimaById(id) {
 export async function createMateriaprima(nome) {
   const result = await pool.query(
     "INSERT INTO materia_prima (nome) VALUES ($1) RETURNING *",
-    [nome]
+    [nome],
   );
   return result.rows[0];
 }
@@ -25,7 +25,7 @@ export async function createMateriaprima(nome) {
 export async function updateMateriaprima(id, nome) {
   const result = await pool.query(
     "UPDATE materia_prima SET nome = $1 WHERE id = $2 RETURNING *",
-    [nome, id]
+    [nome, id],
   );
   return result.rows[0];
 }

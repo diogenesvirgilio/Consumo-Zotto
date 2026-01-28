@@ -2,11 +2,18 @@ import { BASE_URL } from "../api/config.js";
 import { showModalSistema } from "../services/modalService.js";
 import { fetchWithAuth } from "../api/authRefresh.js";
 import { getUserFromToken } from "../services/auth.js";
+import {
+  carregarMateriasPrima,
+  carregarCortadores,
+} from "./cadastrar-faltas.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const userNameDisplay = document.getElementById("userNameDisplay");
   const user = getUserFromToken();
   carregarFaltas();
+
+  carregarMateriasPrima(document.getElementById("materiaPrima"));
+  carregarCortadores(document.getElementById("cortador"));
 
   if (user) {
     userNameDisplay.textContent = `${user.nome}`;
@@ -51,11 +58,11 @@ export async function carregarFaltas() {
   let cortador = document.getElementById("cortador").value.trim();
 
   const requisicao = normalize(
-    document.getElementById("requisicao").value.trim()
+    document.getElementById("requisicao").value.trim(),
   );
 
   const programacao = normalize(
-    document.getElementById("programacao").value.trim()
+    document.getElementById("programacao").value.trim(),
   );
 
   const data = normalize(document.getElementById("data").value.trim());
@@ -141,6 +148,10 @@ function preencherTabela(faltas) {
 
   faltas.forEach((u) => {
     const tr = document.createElement("tr");
+
+    tr.dataset.materiaId = u.materia_prima_id;
+    tr.dataset.cortadorId = u.cortador_id;
+
     tr.innerHTML = `
         <td>${u.materia_prima_nome || "N/A"}</td>
         <td>${u.cortador_nome || "N/A"}</td>
@@ -163,6 +174,210 @@ function preencherTabela(faltas) {
     `;
     tbody.appendChild(tr);
   });
+  //Remove o botão editar excluir da tabela para usuários que não são admin.
+  const usuarioLogado = getUserFromToken();
+  if (usuarioLogado?.role !== "admin") {
+    ["btn-editar", "btn-excluir"].forEach((classe) => {
+      document.querySelectorAll(`.${classe}`).forEach((btn) => {
+        btn.classList.add("d-none");
+      });
+    });
+  }
+
+  adicionarEventosExcluir();
+  adicionarEventosEditar();
+}
+
+function adicionarEventosExcluir() {
+  const botoesExcluir = document.querySelectorAll(".btn-excluir");
+  botoesExcluir.forEach((botao) => {
+    botao.addEventListener("click", async (e) => {
+      const id = e.target.closest("button").getAttribute("data-id");
+      showModalSistema({
+        titulo: "Confirmação",
+        conteudo: "Deseja excluir esta falta?",
+        confirmacao: true,
+        callbackConfirmar: async () => {
+          try {
+            await fetchWithAuth(`${BASE_URL}/faltas/${id}`, {
+              method: "DELETE",
+            });
+            const modalEl = document.getElementById("modalSistema");
+            modalEl.addEventListener("hidden.bs.modal", function handler() {
+              carregarFaltas();
+              modalEl.removeEventListener("hidden.bs.modal", handler);
+            });
+          } catch (err) {
+            showModalSistema({
+              titulo: "Erro",
+              conteudo: err?.message || "Erro ao excluir falta.",
+            });
+          }
+        },
+      });
+    });
+  });
+}
+
+function adicionarEventosEditar() {
+  const botoesEditar = document.querySelectorAll(".btn-editar");
+
+  botoesEditar.forEach((botao) => {
+    botao.addEventListener("click", async (e) => {
+      const btn = e.target.closest("button");
+      const id = btn.getAttribute("data-id");
+      const linha = btn.closest("tr");
+
+      const jaEditando = document.querySelector("tr.editando");
+      if (jaEditando && jaEditando !== linha) {
+        showModalSistema({
+          titulo: "Aviso",
+          conteudo: "Finalize a edição.",
+        });
+        return;
+      }
+
+      if (linha.classList.contains("editando")) {
+        await salvarEdicaoFalta(linha, id);
+        return;
+      }
+
+      try {
+        linha.classList.add("editando");
+
+        const materiaPrimaIdAtual = linha.dataset.materiaId;
+        const cortadorIdAtual = linha.dataset.cortadorId;
+
+        const tds = linha.querySelectorAll("td");
+        const faltaQtd = tds[2].textContent.trim();
+        const data = tds[3].textContent.trim();
+        const programacao = tds[4].textContent.trim();
+        const requisicao = tds[5].textContent.trim();
+        const observacao = tds[6].textContent.trim();
+
+        tds[0].innerHTML = `
+          <select class="form-select form-select-sm" id="editMateriaPrima-${id}">
+          </select>
+        `;
+
+        tds[1].innerHTML = `
+          <select class="form-select form-select-sm" id="editCortador-${id}">
+          </select>
+        `;
+
+        tds[2].innerHTML = `<input type="text" class="form-control form-control-sm" value="${faltaQtd}" id="editFaltaQtd-${id}">`;
+
+        tds[3].innerHTML = `<input type="data" class="form-control form-control-sm" value="${data}" id="editData-${id}">`;
+
+        tds[4].innerHTML = `<input type="text" class="form-control form-control-sm" value="${programacao}" id="editProgramacao-${id}">`;
+
+        tds[5].innerHTML = `<input type="text" class="form-control form-control-sm" value="${requisicao}" id="editRequisicao-${id}">`;
+
+        tds[6].innerHTML = `<input type="text" class="form-control form-control-sm" value="${observacao}" id="editObservacao-${id}">`;
+
+        tds[7].innerHTML = `
+          <button class="btn btn-success btn-sm btn-salvar" data-id="${id}">
+            <i class="fas fa-check"></i>
+          </button>
+        `;
+
+        tds[8].innerHTML = `
+          <button class="btn btn-secondary btn-sm btn-cancelar" data-id="${id}">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        await carregarMateriasPrima(
+          document.getElementById(`editMateriaPrima-${id}`),
+          materiaPrimaIdAtual,
+        );
+
+        await carregarCortadores(
+          document.getElementById(`editCortador-${id}`),
+          cortadorIdAtual,
+        );
+
+        linha
+          .querySelector(".btn-salvar")
+          .addEventListener("click", async () => {
+            await salvarEdicaoFalta(linha, id);
+          });
+
+        linha.querySelector(".btn-cancelar").addEventListener("click", () => {
+          carregarFaltas();
+        });
+      } catch (err) {
+        showModalSistema({
+          titulo: "Erro",
+          conteudo: err?.message || "Erro ao carregar dados.",
+        });
+      }
+    });
+  });
+}
+
+async function salvarEdicaoFalta(linha, id) {
+  const materiaPrima = document
+    .getElementById(`editMateriaPrima-${id}`)
+    ?.value.trim();
+  const cortador = document.getElementById(`editCortador-${id}`)?.value.trim();
+  const faltaQtd = document.getElementById(`editFaltaQtd-${id}`)?.value;
+  const data = document.getElementById(`editData-${id}`)?.value;
+  const programacao = document.getElementById(`editProgramacao-${id}`)?.value;
+  const requisicao = document.getElementById(`editRequisicao-${id}`)?.value;
+  const observacao = document.getElementById(`editObservacao-${id}`)?.value;
+
+  if (
+    !materiaPrima ||
+    !cortador ||
+    !faltaQtd ||
+    !data ||
+    !programacao ||
+    !requisicao ||
+    !observacao
+  ) {
+    showModalSistema({
+      titulo: "Aviso",
+      conteudo: "Preencha todos os campos antes de salvar.",
+    });
+    return;
+  }
+
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/faltas/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        materiaPrimaId: Number(materiaPrima),
+        cortadorId: cortador ? Number(cortador) : null,
+        falta: Number(faltaQtd),
+        data,
+        programacao,
+        requisicao,
+        obs: observacao,
+      }),
+    });
+
+    if (!response.ok) {
+      const erro = await response.json();
+      throw new Error(erro.message || "Erro ao atualizar falta.");
+    }
+
+    showModalSistema({
+      titulo: "Sucesso",
+      conteudo: "Falta atualizado com sucesso!",
+    });
+
+    const modalEl = document.getElementById("modalSistema");
+    modalEl.addEventListener("hidden.bs.modal", function handler() {
+      carregarFaltas();
+      modalEl.removeEventListener("hidden.bs.modal", handler);
+    });
+  } catch (err) {
+    showModalSistema({
+      titulo: "Erro",
+      conteudo: err?.message || "Erro ao salvar alterações.",
+    });
+  }
 }
 
 export async function limparFiltros() {
