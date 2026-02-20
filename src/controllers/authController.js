@@ -12,7 +12,7 @@ import {
 
 import { getUsuariosById } from "../models/usuariosModel.js";
 
-// LOGIN
+// Login
 
 export const login = async (req, res) => {
   const { email, senha } = req.body;
@@ -31,13 +31,13 @@ export const login = async (req, res) => {
       role: usuario.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: process.env.JWT_EXPIRES_IN },
   );
 
   const refreshToken = jwt.sign(
     { id: usuario.id, role: usuario.role },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   const exp = new Date();
@@ -64,7 +64,7 @@ export const login = async (req, res) => {
   });
 };
 
-// REFRESH
+// Refresh
 
 export const refresh = async (req, res) => {
   const token = req.cookies.refreshToken;
@@ -101,7 +101,7 @@ export const refresh = async (req, res) => {
       role: usuario.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "15m" },
   );
 
   // invalida o antigo
@@ -110,7 +110,7 @@ export const refresh = async (req, res) => {
   const newRefresh = jwt.sign(
     { id: usuario.id, role: usuario.role },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
 
   const novaExp = new Date();

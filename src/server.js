@@ -44,13 +44,13 @@ app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000,
-  })
+  }),
 );
 
 // Rotas públicas
 app.use("/auth", authRoutes);
 
-// Página inicial (pública)
+// Página inicial
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/login.html"));
 });
@@ -67,7 +67,6 @@ app.use("/faltas", faltasRoutes);
 // Error handler
 app.use(errorHandler);
 
-// Start server
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => logger.info(`Servidor rodando na porta ${PORT}`));
 }

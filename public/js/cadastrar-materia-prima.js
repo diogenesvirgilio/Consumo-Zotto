@@ -40,6 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
           titulo: "Sucesso",
           conteudo: "Matéria prima cadastrada com sucesso!",
         });
+      } else if (response.status === 409) {
+        showModalSistema({
+          titulo: "Erro",
+          conteudo: data.error || "Cadastro Existente",
+        });
       } else {
         showModalSistema({
           titulo: "Erro",
@@ -49,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       showModalSistema({
         titulo: "Erro",
-        conteudo: "Usuário ou senha inválidos.",
+        conteudo: "Erro ao conectar com o servidor.",
       });
     } finally {
       if (submitBtn) submitBtn.disabled = false;

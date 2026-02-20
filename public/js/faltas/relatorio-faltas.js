@@ -290,6 +290,7 @@ function exportarExcel() {
       worksheet[cellAddress].z = "#,##0.00_);(#,##0.00)";
     }
   }
+
   // Adicionar largura de colunas
   const colWidths = [
     { wch: 30 }, // Coluna Matéria Prima
@@ -329,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   carregarProgramacoes();
 
-  // Event listeners
   document
     .getElementById("pesquisaProgramacao")
     .addEventListener("input", (e) => {

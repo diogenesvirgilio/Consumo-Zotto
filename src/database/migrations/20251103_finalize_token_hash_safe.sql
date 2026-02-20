@@ -1,7 +1,7 @@
--- Safe finalize migration: only runs if column token_hash exists
+-- Finalizar migração com segurança: só é executada se a coluna token_hash existir.
 BEGIN;
 
--- Ensure pgcrypto is available
+-- Verifica se o pgcrypto está disponível
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 DO $$
@@ -10,13 +10,14 @@ BEGIN
     SELECT 1 FROM information_schema.columns
     WHERE table_name = 'refresh_tokens' AND column_name = 'token_hash'
   ) THEN
-    -- Update token from token_hash (store sha256 hex of the token_hash value)
+
+    -- Atualizar token a partir de token_hash (armazena o valor hexadecimal sha256 do token_hash)
     EXECUTE 'UPDATE refresh_tokens SET token = encode(digest(token_hash, ''sha256''), ''hex'') WHERE token_hash IS NOT NULL';
 
-    -- Create index on token for faster lookups
+    -- Criar índice no token para pesquisas mais rápidas
     EXECUTE 'CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens (token)';
 
-    -- Drop the token_hash column
+    -- Remover a coluna token_hash
     EXECUTE 'ALTER TABLE refresh_tokens DROP COLUMN IF EXISTS token_hash';
 
     RAISE NOTICE 'token_hash column found and migrated; token_hash dropped.';
