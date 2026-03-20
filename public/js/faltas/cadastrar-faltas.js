@@ -76,6 +76,33 @@ document.addEventListener("DOMContentLoaded", () => {
   carregarMateriasPrima(selectMateria);
   carregarCortadores(selectCortador);
 
+  // Inicializar Select2
+  $(selectMateria).select2({
+    theme: "bootstrap-5",
+    placeholder: "Buscar matéria prima...",
+    allowClear: true,
+    language: {
+      noResults: function () {
+        return "Não encontrado";
+      },
+    },
+    dropdownParent: $("body"),
+    width: "100%",
+  });
+
+  $(selectCortador).select2({
+    theme: "bootstrap-5",
+    placeholder: "Buscar cortador...",
+    allowClear: true,
+    language: {
+      noResults: function () {
+        return "Não encontrado";
+      },
+    },
+    dropdownParent: $("body"),
+    width: "100%",
+  });
+
   const form = document.getElementById("cadastroFaltasForm");
   if (!form) return;
 

@@ -11,6 +11,7 @@ import materiaprimaRoutes from "./routes/materiaprimaRoutes.js";
 import faltasRoutes from "./routes/faltasRoutes.js";
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import solasRoutes from "./routes/solasRoutes.js";
 
 import { authenticateToken } from "./middlewares/authMiddleware.js";
 import { logRequest } from "./middlewares/logRequest.js";
@@ -63,6 +64,7 @@ app.use("/cortadores", cortadoresRoutes);
 app.use("/usuarios", usuariosRoutes);
 app.use("/materiaprima", materiaprimaRoutes);
 app.use("/faltas", faltasRoutes);
+app.use("/solas", solasRoutes);
 
 // Error handler
 app.use(errorHandler);

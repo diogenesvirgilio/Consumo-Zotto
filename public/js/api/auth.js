@@ -25,22 +25,37 @@ export async function login(email, senha) {
 }
 
 export async function refreshToken() {
-  const response = await fetch(`${BASE_URL}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken: getRefreshToken() }),
-  });
-
-  const data = await response.json();
-
-  if (response.ok) {
-    if (data.accessToken) setAccessToken(data.accessToken);
-    if (data.refreshToken) setRefreshToken(data.refreshToken);
-    return data.accessToken;
+  const refreshTokenValue = getRefreshToken();
+  
+  if (!refreshTokenValue) {
+    clearStorage();
+    window.location.href = "/pages/login.html";
+    throw new Error("Refresh token não disponível");
   }
 
-  clearStorage();
-  window.location.href = "/pages/login.html";
+  try {
+    const response = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: refreshTokenValue }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      if (data.accessToken) setAccessToken(data.accessToken);
+      if (data.refreshToken) setRefreshToken(data.refreshToken);
+      return data.accessToken;
+    } else {
+      clearStorage();
+      window.location.href = "/pages/login.html";
+      throw new Error(data.error || "Falha ao renovar token");
+    }
+  } catch (error) {
+    clearStorage();
+    window.location.href = "/pages/login.html";
+    throw error;
+  }
 }
 
 export async function logout() {

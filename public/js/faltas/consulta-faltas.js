@@ -29,14 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   document.getElementById("btnLimparFalta").addEventListener("click", () => {
-    document.getElementById("materiaPrima").value = "";
-    document.getElementById("cortador").value = "";
-    document.getElementById("falta").value = "";
-    document.getElementById("data").value = "";
-    document.getElementById("programacao").value = "";
-    document.getElementById("diaReuniao").value = "";
-    document.getElementById("requisicao").value = "";
-    document.getElementById("observacao").value = "";
+    document.getElementById("cadastroFaltasForm").reset();
+
+    ["materiaPrima", "cortador"].forEach((id) =>
+      document.getElementById(id).dispatchEvent(new Event("change")),
+    );
+
     carregarFaltas();
   });
 });
@@ -136,13 +134,23 @@ export async function carregarFaltas() {
   }
 }
 
+function sanetizeHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function preencherTabela(faltas) {
   const tbody = document.getElementById("listaFaltas");
   tbody.innerHTML = "";
 
   if (faltas.length === 0) {
     tbody.innerHTML =
-      "<tr><td colspan='4' class='text-center'>Nenhuma falta encontrada.</td></tr>";
+      "<tr><td colspan='9' class='text-center'>Nenhuma falta encontrada.</td></tr>";
     return;
   }
 
@@ -153,13 +161,13 @@ function preencherTabela(faltas) {
     tr.dataset.cortadorId = u.cortador_id;
 
     tr.innerHTML = `
-        <td>${u.materia_prima_nome || "N/A"}</td>
-        <td>${u.cortador_nome || "N/A"}</td>
-        <td>${u.falta}</td>
+        <td>${sanetizeHTML(u.materia_prima_nome) || "N/A"}</td>
+        <td>${sanetizeHTML(u.cortador_nome) || "N/A"}</td>
+        <td>${sanetizeHTML(u.falta)}</td>
         <td>${u.data ? new Date(u.data).toLocaleDateString() : ""}</td>
-        <td>${u.programacao || "N/A"}</td>
-        <td>${u.requisicao || "N/A"}</td>
-        <td>${u.obs || "N/A"}</td>
+        <td>${sanetizeHTML(u.programacao) || "N/A"}</td>
+        <td>${sanetizeHTML(u.requisicao) || "N/A"}</td>
+        <td>${sanetizeHTML(u.obs) || "N/A"}</td>
         <td>
           <button class="btn btn-warning btn-sm btn-editar" data-id="${u.id}">
             <i class="fas fa-edit"></i>
@@ -174,6 +182,7 @@ function preencherTabela(faltas) {
     `;
     tbody.appendChild(tr);
   });
+
   //Remove o botão editar excluir da tabela para usuários que não são admin.
   const usuarioLogado = getUserFromToken();
   if (usuarioLogado?.role !== "admin") {
@@ -267,7 +276,7 @@ function adicionarEventosEditar() {
 
         tds[2].innerHTML = `<input type="text" class="form-control form-control-sm" value="${faltaQtd}" id="editFaltaQtd-${id}">`;
 
-        tds[3].innerHTML = `<input type="data" class="form-control form-control-sm" value="${data}" id="editData-${id}">`;
+        tds[3].innerHTML = `<input type="date" class="form-control form-control-sm" value="${data}" id="editData-${id}">`;
 
         tds[4].innerHTML = `<input type="text" class="form-control form-control-sm" value="${programacao}" id="editProgramacao-${id}">`;
 

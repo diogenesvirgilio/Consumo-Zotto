@@ -1,4 +1,4 @@
-import { getUserFromToken, logout } from "./services/auth.js";
+import { getUserFromToken, logout, initTokenRefreshWorker } from "./services/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const usuarioLogado = getUserFromToken();
@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (usuarioLogado) {
     userNameDisplay.textContent = `${usuarioLogado.nome}`;
+    // Inicia o worker de refresh automático de token
+    initTokenRefreshWorker();
   } else {
     userNameDisplay.textContent = "Não autenticado";
     window.location.href = "login.html";

@@ -1,0 +1,61 @@
+.container-pesos{
+    margin-top: 20px;
+}
+
+.linha-tabelas{
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.linha-inferior{
+    margin-top: 20px;
+}
+
+.tabela-peso{
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.tabela-peso th{
+    background-color: #0d6efd;
+    color: white;
+    padding: 6px 10px;
+    border: 2px solid black;
+    text-align: center;
+}
+
+.tabela-peso td{
+    border: 2px solid black;
+    text-align: center;
+    padding: 4px;
+}
+
+.tabela-peso td:first-child{
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    width: 60px;
+}
+
+.tabela-peso input{
+    width: 80px;
+    border: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.tabela-peso input:focus{
+    outline: none;
+}
+
+/* Remove spinner do input type="number" */
+.tabela-peso input::-webkit-outer-spin-button,
+.tabela-peso input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.tabela-peso input[type=number] {
+    -moz-appearance: textfield;
+}

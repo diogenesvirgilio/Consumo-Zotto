@@ -1,24 +1,23 @@
-@media (min-width: 992px) {
-    .navbar .nav-item.dropdown:hover .dropdown-menu {
-        display: block;
-        margin-top: 0;
-    }
-} 
-
-html, body {
+ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: auto;                          /* Permite a rolagem geral apenas quando necessário */
 }
 
 body {
   display: flex;
   flex-direction: column;
+  padding-bottom: 40px;
+}
+
+body.cadastro-page {
+  overflow-y: auto;
 }
 
 .navbar {
   flex-shrink: 0;                          /* Garante que a navbar mantenha sua altura e não seja comprimida */
+  position: sticky;
+  top: 0;
 }
 
 .main-content {
@@ -29,8 +28,7 @@ body {
     align-items: center;                   /* Centraliza horizontalmente o card */
     padding: 20px;                         /* Adiciona um padding para evitar que o card grude nas bordas em telas pequenas */
     box-sizing: border-box;                /* Garante que o padding não aumente a altura/largura total */
-    overflow-y: auto;                      /* Adicione overflow-y: auto; para garantir que apenas o main-content role se o conteúdo dele for grande demais */
-    overflow-x: hidden;                    /* Adicione overflow-x: hidden; para evitar rolagem horizontal indesejada */
+    overflow: hidden;                      /* Evita rolagem, deixando apenas a tabela com sua própria barra */
 }
 
 .logo-navbar {
@@ -41,23 +39,35 @@ body {
 
 /*Customizar as tabelas */
 .table-responsive {
-  max-height: 700px;  
+  max-height: calc(105vh - 450px);  
   overflow-y: auto;   
   overflow-x: auto;   
-} 
+}  
 
-.tabela-geral th, 
-.tabela-geral td {
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table-geral th, 
+.table-geral td {
   vertical-align: middle !important;
   text-align: center !important;
 }
 
-.tabela-geral tr.editando > * {
+/* Fixar cabeçalhos da tabela durante scroll */
+.table-geral thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 10;
+}
+
+.table-geral tr.editando > * {
   background-color: #fff3cd !important; 
   transition: background-color 0.3s ease;
 } 
 
-.tabela-geral tbody tr:hover > * {
+.table-geral tbody tr:hover > * {
   background-color: #fff3cd;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -89,3 +99,140 @@ body {
     overflow-y: auto;
 }
 
+.select2-results__option {
+    white-space: nowrap;
+    padding: 6px 8px;
+}
+
+.select2-results {
+    max-width: none !important;
+}
+
+.select2-dropdown--below {
+    min-width: 300px !important;
+}
+
+/* Responsividade melhorada para formulários */
+.form-control,
+.form-select {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+/* Select2 responsivo */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection {
+    min-height: 38px;
+    height: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.select2-dropdown.select2-dropdown--below {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Fix para dropdown ficar muito grande */
+.select2-container {
+    z-index: 1050;
+}
+
+/* Responsividade em telas muito pequenas */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .row {
+        margin-left: -6px;
+        margin-right: -6px;
+    }
+    
+    .row > * {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+    
+    .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .navbar-brand {
+        padding: 0.25rem 0;
+    }
+    
+    .logo-navbar {
+        width: 80px;
+    }
+    
+    #userNameDisplay {
+        font-size: 0.85rem;
+    }
+    
+    /* Select2 em telas pequenas */
+    .form-select,
+    .select2-container--bootstrap-5 .select2-selection {
+        font-size: 0.9rem !important;
+    }
+    
+    .select2-dropdown.select2-dropdown--below {
+        max-height: 250px !important;
+    }
+}
+    
+    /* Select2 em tablets */
+    .form-select,
+    .select2-container--bootstrap-5 .select2-selection {
+        font-size: 0.95rem !important;
+    }
+
+/* Responsividade em tablets */
+@media (min-width: 577px) and (max-width: 991px) {
+    .form-label {
+        font-size: 0.95rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}
+
+.table-geral {
+    white-space: nowrap;
+} 
+
+@media (max-width: 768px) {
+    .table-geral th,
+    .table-geral td {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.85rem;
+    }
+    
+    .table-geral {
+        font-size: 0.8rem;
+    }
+} 
+
+@media (min-width: 992px) {
+    .navbar .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+}
