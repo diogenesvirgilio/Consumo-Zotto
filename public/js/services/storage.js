@@ -6,14 +6,17 @@ export function setAccessToken(token) {
   localStorage.setItem("accessToken", token);
 }
 
-export function getRefreshToken() {
-  return localStorage.getItem("refreshToken");
-}
-
-export function setRefreshToken(token) {
-  localStorage.setItem("refreshToken", token);
-}
-
 export function clearStorage() {
   localStorage.clear();
+}
+
+export function getRefreshToken() {
+  console.warn("getRefreshToken() é deprecated - use cookie HTTP-only");
+  return null;
+}
+
+export function setRefreshToken() {
+  console.warn(
+    "setRefreshToken() é deprecated - cookie é gerenciado pelo servidor",
+  );
 }

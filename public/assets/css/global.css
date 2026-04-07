@@ -8,7 +8,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
-}
+} 
 
 body.cadastro-page {
   overflow-y: auto;
@@ -18,7 +18,7 @@ body.cadastro-page {
   flex-shrink: 0;                          /* Garante que a navbar mantenha sua altura e não seja comprimida */
   position: sticky;
   top: 0;
-}
+} 
 
 .main-content {
     flex-grow: 1;                          /* Faz este elemento ocupar todo o espaço vertical restante */
@@ -35,42 +35,6 @@ body.cadastro-page {
     width: 120px;
     height: auto;
     object-fit: contain;
-} 
-
-/*Customizar as tabelas */
-.table-responsive {
-  max-height: calc(105vh - 450px);  
-  overflow-y: auto;   
-  overflow-x: auto;   
-}  
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.table-geral th, 
-.table-geral td {
-  vertical-align: middle !important;
-  text-align: center !important;
-}
-
-/* Fixar cabeçalhos da tabela durante scroll */
-.table-geral thead th {
-  position: sticky;
-  top: 0;
-  background-color: #f8f9fa;
-  z-index: 10;
-}
-
-.table-geral tr.editando > * {
-  background-color: #fff3cd !important; 
-  transition: background-color 0.3s ease;
-} 
-
-.table-geral tbody tr:hover > * {
-  background-color: #fff3cd;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 } 
 
 .dropdown-item.disabled-link {
@@ -145,7 +109,7 @@ body.cadastro-page {
 /* Fix para dropdown ficar muito grande */
 .select2-container {
     z-index: 1050;
-}
+} 
 
 /* Responsividade em telas muito pequenas */
 @media (max-width: 576px) {
@@ -196,39 +160,11 @@ body.cadastro-page {
         max-height: 250px !important;
     }
 }
-    
     /* Select2 em tablets */
     .form-select,
     .select2-container--bootstrap-5 .select2-selection {
         font-size: 0.95rem !important;
     }
-
-/* Responsividade em tablets */
-@media (min-width: 577px) and (max-width: 991px) {
-    .form-label {
-        font-size: 0.95rem;
-    }
-    
-    .table-responsive {
-        font-size: 0.9rem;
-    }
-}
-
-.table-geral {
-    white-space: nowrap;
-} 
-
-@media (max-width: 768px) {
-    .table-geral th,
-    .table-geral td {
-        padding: 0.5rem 0.3rem;
-        font-size: 0.85rem;
-    }
-    
-    .table-geral {
-        font-size: 0.8rem;
-    }
-} 
 
 @media (min-width: 992px) {
     .navbar .nav-item.dropdown:hover .dropdown-menu {

@@ -1,15 +1,11 @@
 import { BASE_URL } from "./config.js";
-import {
-  getRefreshToken,
-  setAccessToken,
-  clearStorage,
-  setRefreshToken,
-} from "../services/storage.js";
+import { setAccessToken, clearStorage } from "../services/storage.js";
 import { fetchWithAuth } from "./authRefresh.js";
 
 export async function login(email, senha) {
   const response = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
+    credentials: "include",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify({ email, senha }),
   });
@@ -18,33 +14,23 @@ export async function login(email, senha) {
 
   if (response.ok) {
     setAccessToken(data.accessToken);
-    if (data.refreshToken) setRefreshToken(data.refreshToken);
     return data;
   }
   throw data;
 }
 
 export async function refreshToken() {
-  const refreshTokenValue = getRefreshToken();
-  
-  if (!refreshTokenValue) {
-    clearStorage();
-    window.location.href = "/pages/login.html";
-    throw new Error("Refresh token não disponível");
-  }
-
   try {
     const response = await fetch(`${BASE_URL}/auth/refresh`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: refreshTokenValue }),
     });
 
     const data = await response.json();
 
     if (response.ok) {
       if (data.accessToken) setAccessToken(data.accessToken);
-      if (data.refreshToken) setRefreshToken(data.refreshToken);
       return data.accessToken;
     } else {
       clearStorage();

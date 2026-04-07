@@ -1,0 +1,55 @@
+/*CSS para todas as tabelas. */ 
+
+.table-responsive {
+  max-height: calc(105vh - 450px);  
+  overflow: auto;   
+}  
+
+.table-geral {
+    white-space: nowrap;
+} 
+
+.table-geral th, 
+.table-geral td {
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
+/* Fixar cabeçalhos da tabela durante scroll */
+.table-geral thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 10;
+}
+
+.table-geral tr.editando > * {
+  background-color: #fff3cd !important; 
+  transition: background-color 0.3s ease;
+} 
+
+.table-geral tbody tr:hover > * {
+  background-color: #fff3cd;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+} 
+
+/* Responsividade */
+@media (min-width: 577px) and (max-width: 991px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+} 
+
+@media (max-width: 768px) {
+    .table-geral th,
+    .table-geral td {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.85rem;
+    }
+    
+    .table-geral {
+        font-size: 0.8rem;
+    }
+} 
+

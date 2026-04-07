@@ -5,7 +5,7 @@
 .linha-tabelas{
     display: flex;
     justify-content: flex-start;
-    gap: 20px;
+    gap: 40px;
 }
 
 .linha-inferior{
@@ -20,7 +20,7 @@
 .tabela-peso th{
     background-color: #0d6efd;
     color: white;
-    padding: 6px 10px;
+    padding: 6px 20px;
     border: 2px solid black;
     text-align: center;
 }
@@ -39,7 +39,7 @@
 }
 
 .tabela-peso input{
-    width: 80px;
+    width: 100%;
     border: none;
     text-align: center;
     font-weight: bold;
@@ -59,3 +59,4 @@
 .tabela-peso input[type=number] {
     -moz-appearance: textfield;
 }
+

@@ -7,15 +7,13 @@ import {
 
 const router = express.Router();
 
-// Listar usuários — apenas admins
 router.get(
   "/",
   authenticateToken,
   authorizeRoles("admin"),
-  usuariosController.listUsuarios
+  usuariosController.listUsuarios,
 );
 
-// Buscar usuário por ID — admin ou o próprio usuário.
 router.get("/:id", authenticateToken, usuariosController.findUsuario);
 
 // Criar usuário — apenas admin
@@ -23,17 +21,16 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin"),
-  usuariosController.registerUsuario
+  usuariosController.registerUsuario,
 );
 
-// Atualizar usuário — admin ou o próprio perfil
 router.put("/:id", usuariosController.handleUpdateUsuario);
 
-// Deletar usuário — apenas admin
 router.delete(
   "/:id",
+  authenticateToken,
   authorizeRoles("admin"),
-  usuariosController.removeUsuario
+  usuariosController.removeUsuario,
 );
 
 export default router;

@@ -144,6 +144,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="pesos-sola.html">Cadastro</a></li>
+                <li><a class="dropdown-item" href="consulta-pesos-sola.html">Consulta</a></li>
               </ul>
             </li>
           </ul>
@@ -158,21 +159,43 @@
     </nav> 
 
     <div class="container mt-4">
-      <h4 class="mb-4 text-center">Cadastrar Pesos</h4>
+      <h4 class="mb-4 text-center">Cadastrar/Atualizar Pesos</h4>
 
             <form id="cadastroSolaForm">
               <div class="container">
 
                 <div class="row g-3">
-                  <div class="col-12 col-sm-6 col-md-2">
+                  <div class="col-12 col-sm-6 col-md-3">
                     <label for="nome_sola" class="form-label">Sola</label>
-                    <input type="text" class="form-control" id="nome_sola" placeholder="Nome Sola">
+                    <input type="text" class="form-control" id="nome_sola" placeholder="Digite para buscar..." list="solasList" autocomplete="off">
+                    <datalist id="solasList"></datalist>
                 </div> 
 
                 <div class="col-12 col-sm-6 col-md-2">
                   <label for="codigo_sola" class="form-label">Código Sola</label>
-                    <input type="text" class="form-control" id="codigo_sola" placeholder="Código Sola">
+                  <input type="text" class="form-control" id="codigo_sola" placeholder="Digite para buscar..." list="codigoSolaList" autocomplete="off">
+                  <datalist id="codigoSolaList"></datalist>
                 </div> 
+
+                <div class="col-md-2">
+                  <label for="material_cunho" class="form-label">Material Cunho</label>
+                  <select class="form-select" id="material_cunho">
+                      <option value="" disabled selected>Selecione...</option>
+                      <option value="micro">Micro</option>
+                      <option value="pvc">PVC</option>
+                      <option value="tr">TR</option>
+                      </select>
+                </div>
+
+                <div class="col-md-2">
+                  <label for="material_soleta" class="form-label">Material Soleta</label>
+                  <select class="form-select" id="material_soleta">
+                      <option value="" disabled selected>Selecione...</option>
+                      <option value="micro">Micro</option>
+                      <option value="pvc">PVC</option>
+                      <option value="tr">TR</option>
+                      </select>
+                </div>
 
                 <div class="col-12 col-sm-6 col-md-2">
                   <label for="data_atualizacao" class="form-label">Data de Atualização</label>
@@ -295,6 +318,9 @@
           </button>
           <button type="reset" class="btn btn-secondary flex-grow-1" id="btnLimparPeso">
             <i class="fas fa-eraser"></i> Limpar
+          </button>
+          <button type="button" class="btn btn-warning flex-grow-1 d-none" id="btnCancelarEdicao">
+            <i class="fas fa-times"></i> Cancelar
           </button> 
         </div>
       </div>    
