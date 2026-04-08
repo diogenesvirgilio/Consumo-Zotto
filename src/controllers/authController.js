@@ -129,7 +129,6 @@ export const refresh = async (req, res) => {
 };
 
 // Logout
-
 export const logout = async (req, res) => {
   const rawAuth = req.headers["authorization"];
   const accessToken = rawAuth?.split(" ")[1];
