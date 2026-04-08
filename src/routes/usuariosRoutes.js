@@ -24,7 +24,7 @@ router.post(
   usuariosController.registerUsuario,
 );
 
-router.put("/:id", usuariosController.handleUpdateUsuario);
+router.put("/:id", authenticateToken, usuariosController.handleUpdateUsuario);
 
 router.delete(
   "/:id",
