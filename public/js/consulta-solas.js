@@ -221,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const selectNomeSola = document.getElementById("nome_sola");
   const selectCodigoSola = document.getElementById("codigo_sola");
-  const btnPesquisar = document.getElementById("btnPesquisarSola");
   const btnLimpar = document.getElementById("btnLimparSola");
   const tableBody = document.querySelector("table tbody");
 
@@ -434,23 +433,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (btnPesquisar) {
-    btnPesquisar.addEventListener("click", () => {
-      const solaId = selectNomeSola?.value || selectCodigoSola?.value || "";
-
-      if (!solaId) {
-        showModalSistema({
-          titulo: "Atenção",
-          conteudo: "Selecione uma sola para pesquisar.",
-        });
-        return;
-      }
-
-      buscarSola(null, null, solaId);
-    });
-  }
-
-  // Botão limpar
   if (btnLimpar) {
     btnLimpar.addEventListener("click", () => {
       if (selectNomeSola) {

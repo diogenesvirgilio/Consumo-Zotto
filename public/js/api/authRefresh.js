@@ -4,6 +4,7 @@ import {
   setAccessToken,
   clearStorage,
 } from "../services/storage.js";
+import { getCsrfToken, invalidateCsrfToken } from "../utils/csrf.js";
 
 let isRefreshing = false;
 let refreshPromise = null;
@@ -46,9 +47,28 @@ export async function fetchWithAuth(url, options = {}) {
   let accessToken = getAccessToken();
   options.headers = options.headers || {};
   options.headers["Authorization"] = `Bearer ${accessToken}`;
-  options.credentials = "include"; // incluir para refresh token
+  options.credentials = "include";
+
+  // Adicionar CSRF token para POST, PUT e DELETE
+  if (["POST", "PUT", "DELETE"].includes(options.method)) {
+    const csrfToken = await getCsrfToken();
+    if (csrfToken) {
+      options.headers["X-CSRF-TOKEN"] = csrfToken;
+    }
+  }
 
   let response = await fetch(url, options);
+
+  // Tentar recuperar em caso de erro CSRF (403)
+  if (response.status === 403 && ["POST", "PUT", "DELETE"].includes(options.method)) {
+    // Token CSRF pode ter expirado, tenta novamente com novo token
+    invalidateCsrfToken();
+    const newCsrfToken = await getCsrfToken();
+    if (newCsrfToken) {
+      options.headers["X-CSRF-TOKEN"] = newCsrfToken;
+      response = await fetch(url, options);
+    }
+  }
 
   if (response.status === 401) {
     try {

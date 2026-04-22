@@ -22,6 +22,12 @@ import { sanitizeMiddleware } from "./middlewares/sanitizeMiddleware.js";
 import logger from "./utils/logger.js";
 import rateLimit from "express-rate-limit";
 
+import { securityHeaders } from "./middlewares/securityHeaders.js";
+import {
+  csrfProtection,
+  generateCsrfToken,
+} from "./middlewares/csrfMiddleware.js";
+
 dotenv.config();
 
 const app = express();
@@ -32,6 +38,7 @@ const __dirname = path.dirname(__filename);
 
 // Middlewares globais
 app.disable("x-powered-by");
+app.use(securityHeaders);
 app.use(corsMiddleware);
 
 app.use(cookieParser());
@@ -48,6 +55,14 @@ app.use(
   }),
 );
 
+// Rota para obter CSRF token
+app.post("/api/csrf-token", authenticateToken, (req, res) => {
+  const token = generateCsrfToken(req.usuario.id);
+  res.json({ csrfToken: token });
+});
+
+app.use(logRequest);
+
 // Rotas públicas
 app.use("/auth", authRoutes);
 
@@ -56,8 +71,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/login.html"));
 });
 
-// Middleware de auth + log (somente rotas privadas)
-app.use(authenticateToken, logRequest);
+// Middleware de auth (somente rotas privadas, CSRF aplicado em rotas específicas)
+app.use(authenticateToken);
 
 // Rotas privadas
 app.use("/cortadores", cortadoresRoutes);

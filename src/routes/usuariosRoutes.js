@@ -4,6 +4,7 @@ import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/authMiddleware.js";
+import { csrfProtection } from "../middlewares/csrfMiddleware.js";
 
 const router = express.Router();
 
@@ -21,15 +22,22 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin"),
+  csrfProtection,
   usuariosController.registerUsuario,
 );
 
-router.put("/:id", authenticateToken, usuariosController.handleUpdateUsuario);
+router.put(
+  "/:id",
+  authenticateToken,
+  csrfProtection,
+  usuariosController.handleUpdateUsuario,
+);
 
 router.delete(
   "/:id",
   authenticateToken,
   authorizeRoles("admin"),
+  csrfProtection,
   usuariosController.removeUsuario,
 );
 

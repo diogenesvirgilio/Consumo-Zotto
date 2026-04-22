@@ -228,6 +228,14 @@ function adicionarEventosExcluir() {
   });
 }
 
+function convertDateDDMMYYYYtoYYYYMMDD(dateStr) {
+  // Converte DD/MM/YYYY para YYYY-MM-DD
+  if (!dateStr) return "";
+  const [day, month, year] = dateStr.split("/");
+  if (!day || !month || !year) return "";
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
+
 function adicionarEventosEditar() {
   const botoesEditar = document.querySelectorAll(".btn-editar");
 
@@ -259,7 +267,8 @@ function adicionarEventosEditar() {
 
         const tds = linha.querySelectorAll("td");
         const faltaQtd = tds[2].textContent.trim();
-        const data = tds[3].textContent.trim();
+        const dataFormatada = tds[3].textContent.trim();
+        const data = convertDateDDMMYYYYtoYYYYMMDD(dataFormatada);
         const programacao = tds[4].textContent.trim();
         const requisicao = tds[5].textContent.trim();
         const observacao = tds[6].textContent.trim();

@@ -1,6 +1,7 @@
 import express from "express";
 import * as cortadoresController from "../controllers/cortadoresController.js";
 import { authorizeRoles, verifyToken } from "../middlewares/authMiddleware.js";
+import { csrfProtection } from "../middlewares/csrfMiddleware.js";
 
 const router = express.Router();
 
@@ -13,11 +14,22 @@ router.post(
   "/",
   verifyToken,
   authorizeRoles("admin"),
+  csrfProtection,
   cortadoresController.registerCortador
 );
 
 // Atualização e remoção
-router.put("/:id", cortadoresController.handleUpdateCortador);
-router.delete("/:id", cortadoresController.removeCortador);
+router.put(
+  "/:id",
+  verifyToken,
+  csrfProtection,
+  cortadoresController.handleUpdateCortador
+);
+router.delete(
+  "/:id",
+  verifyToken,
+  csrfProtection,
+  cortadoresController.removeCortador
+);
 
 export default router;

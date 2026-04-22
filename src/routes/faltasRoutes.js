@@ -7,13 +7,14 @@ import {
   removeFalta,
 } from "../controllers/faltasController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
+import { csrfProtection } from "../middlewares/csrfMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authenticateToken, listFaltas);
-router.get("/:requisicao", authenticateToken, findFalta);
-router.post("/", authenticateToken, registerFalta);
-router.put("/:id", authenticateToken, handleUpdateFalta);
-router.delete("/:id", authenticateToken, removeFalta);
+router.get("/", listFaltas);
+router.get("/:requisicao", findFalta);
+router.post("/", csrfProtection, registerFalta);
+router.put("/:id", csrfProtection, handleUpdateFalta);
+router.delete("/:id", csrfProtection, removeFalta);
 
 export default router;

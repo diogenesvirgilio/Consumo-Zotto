@@ -5,14 +5,16 @@ import {
          registerMateriaprima,
          handleUpdateMateriaprima,
          removeMateriaprima
-} from "../controllers/materiaprimaController.js"; 
+} from "../controllers/materiaprimaController.js";
+import { authenticateToken } from "../middlewares/authMiddleware.js";
+import { csrfProtection } from "../middlewares/csrfMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", listMateriasprima);
-router.get("/:id", findMateriaprima);
-router.post("/", registerMateriaprima); 
-router.put("/:id", handleUpdateMateriaprima);
-router.delete("/:id", removeMateriaprima);
+router.get("/", authenticateToken, listMateriasprima);
+router.get("/:id", authenticateToken, findMateriaprima);
+router.post("/", authenticateToken, csrfProtection, registerMateriaprima); 
+router.put("/:id", authenticateToken, csrfProtection, handleUpdateMateriaprima);
+router.delete("/:id", authenticateToken, csrfProtection, removeMateriaprima);
 
 export default router;
