@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.get("/", listFaltas);
 router.get("/:requisicao", findFalta);
-router.post("/", csrfProtection, registerFalta);
-router.put("/:id", csrfProtection, handleUpdateFalta);
-router.delete("/:id", csrfProtection, removeFalta);
+router.post("/", authenticateToken, csrfProtection, registerFalta);
+router.put("/:id", authenticateToken, csrfProtection, handleUpdateFalta);
+router.delete("/:id", authenticateToken, csrfProtection, removeFalta);
 
 export default router;

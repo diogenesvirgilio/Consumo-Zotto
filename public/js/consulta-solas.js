@@ -24,7 +24,7 @@ function exportarPDF() {
     "Número",
     "Sola",
     "Código",
-    "Material Sola",
+    "Material Cunho",
     "Material Soleta",
     "Data",
     "Peso PAR",
@@ -157,7 +157,7 @@ function exportarExcel() {
       Número: peso.numero,
       Sola: solaAtual.nome_sola || "-",
       Código: solaAtual.codigo_sola || "-",
-      "Material Sola": solaAtual.material_cunho || "-",
+      "Material Cunho": solaAtual.material_cunho || "-",
       "Material Soleta": solaAtual.material_soleta || "-",
       Data: dataFormatada,
       "Peso PAR": parseFloat(sola_valor.toString().replace(",", ".")),
@@ -176,7 +176,7 @@ function exportarExcel() {
     { wch: 10 }, // Número
     { wch: 15 }, // Sola
     { wch: 12 }, // Código
-    { wch: 18 }, // Material Sola
+    { wch: 18 }, // Material Cunho
     { wch: 18 }, // Material Soleta
     { wch: 12 }, // Data
     { wch: 12 }, // Peso PAR

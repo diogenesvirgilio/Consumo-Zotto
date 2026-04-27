@@ -40,6 +40,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const obterMultiplicadorPigmento = (material) => {
+    if (!material) return 2;
+    const materialUpper = material.toUpperCase().trim();
+
+    if (materialUpper === "MICRO") {
+      return 4;
+    } else if (materialUpper === "TR" || materialUpper === "PVC") {
+      return 2;
+    }
+    return 2;
+  };
+
   // Aplicar validação em todos os inputs de peso
   const weightInputs = document.querySelectorAll('input[inputmode="decimal"]');
   weightInputs.forEach((input) => {
@@ -60,6 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const cunho = sola - soleta;
 
+        const material_cunho = document.getElementById("material_cunho").value;
+        const material_soleta =
+          document.getElementById("material_soleta").value;
+
+        const multiplicadorCunho = obterMultiplicadorPigmento(material_cunho);
+        const multiplicadorSoleta = obterMultiplicadorPigmento(material_soleta);
+
         const cunhoInput = document.getElementById(`cunho_${numero}`);
         const pigSoletaInput = document.getElementById(`pig_soleta_${numero}`);
         const pigCunhoInput = document.getElementById(`pig_cunho_${numero}`);
@@ -69,15 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
           marcarCampoZerado(cunhoInput);
         }
 
-        // calcular pigmentos: peso / 100 * 2
+        // calcular pigmentos: agora dinâmicos
         if (pigSoletaInput) {
-          const pigSoleta = (soleta / 100) * 2;
+          const pigSoleta = (soleta / 100) * multiplicadorSoleta;
           pigSoletaInput.value = formatarPeso(pigSoleta);
           marcarCampoZerado(pigSoletaInput);
         }
 
         if (pigCunhoInput) {
-          const pigCunho = (cunho / 100) * 2;
+          const pigCunho = (cunho / 100) * multiplicadorCunho;
           pigCunhoInput.value = formatarPeso(pigCunho);
           marcarCampoZerado(pigCunhoInput);
         }
@@ -86,6 +105,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // Adicionar listener para input
       solaInput.addEventListener("input", calcular);
       soletaInput.addEventListener("input", calcular);
+
+      document
+        .getElementById("material_cunho")
+        .addEventListener("change", calcular);
+      document
+        .getElementById("material_soleta")
+        .addEventListener("change", calcular);
     }
   };
 
@@ -235,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (!response.ok) {
-        if (response.status === 404) {
+        if (response.status === 404 && !silencioso) {
           if (!silencioso) {
             showModalSistema({
               titulo: "Informação",
@@ -270,7 +296,11 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(solaSelectionTimeout);
     solaSelectionTimeout = setTimeout(() => {
       const nome = nomeSolaInput.value.trim();
-      if (nome) {
+      // Validar se o nome existe realmente no datalist
+      const optionsArray = Array.from(solasList.options);
+      const existeNoDatalist = optionsArray.some((opt) => opt.value === nome);
+
+      if (nome && existeNoDatalist) {
         buscarSola(nome, "", true);
       }
     }, 100);
@@ -293,7 +323,11 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(codigoSelectionTimeout);
     codigoSelectionTimeout = setTimeout(() => {
       const codigo = codigoSolaInput.value.trim();
-      if (codigo) {
+      // Validar se o código existe realmente no datalist
+      const optionsArray = Array.from(codigoSolaList.options);
+      const existeNoDatalist = optionsArray.some((opt) => opt.value === codigo);
+
+      if (codigo && existeNoDatalist) {
         buscarSola("", codigo, true);
       }
     }, 100);
