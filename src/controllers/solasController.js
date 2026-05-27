@@ -222,6 +222,7 @@ export async function updateSola(req, res, next) {
     } catch (rollbackErr) {
       console.error("Erro ao fazer ROLLBACK:", rollbackErr);
     }
+    console.error("Erro no registerSolas:", err);
     next(err);
   } finally {
     client.release();

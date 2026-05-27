@@ -50,6 +50,10 @@ export const csrfProtection = (req, res, next) => {
   const token = req.headers["x-csrf-token"] || req.body?.csrfToken;
   const sessionId = req.usuario?.id || req.cookies.sessionId;
 
+  console.log(
+    `CSRF Debug - sessionId: ${sessionId}, token: ${token}, valid: ${!!token}`,
+  );
+
   if (!sessionId || !token || !verifyToken(sessionId, token)) {
     return res.status(403).json({ error: "Token CSRF inválido ou expirado" });
   }
